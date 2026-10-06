@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Text;
 using MictcoWebService.Common;
 using System.Data;
+using System.Data.SqlClient;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Cors;
@@ -44,6 +45,7 @@ namespace MictcoWebService.Controllers
                 try
                 {
                     ussvr = new UserSqlServer(this, validateUser: false);
+                    using SqlConnection conn = await OpenLoginConnectionAsync(ussvr);
                     string loginQuery = "";
 
                     string areaid = "";
@@ -52,12 +54,12 @@ namespace MictcoWebService.Controllers
                     areaid = user.area != "" ? user.area.ToString() : 0.ToString();
                     routeid = user.routId != "" ? user.routId.ToString() : 0.ToString();
                     string sql = "";
-                    DataTable dt_count = ussvr.dbReaderFill("select count(ans_id) as cntmacid from android_settings where ans_name='VALIDATE MACID'");
+                    DataTable dt_count = Fill(conn, "select count(ans_id) as cntmacid from android_settings where ans_name='VALIDATE MACID'");
                     if (dt_count == null)
                         throw new Exception(string.IsNullOrEmpty(ussvr.lastError) ? "Database connection failed" : ussvr.lastError);
                     int _cntvalidatemacid = Convert.ToInt32(dt_count.Rows[0][0].ToString());
                     bool ENABLEVALIDATEMACID = false;
-                    DataTable dt_settings = ussvr.dbReaderFill("SELECT ans_status FROM android_settings where ans_name='VALIDATE MACID'");
+                    DataTable dt_settings = Fill(conn, "SELECT ans_status FROM android_settings where ans_name='VALIDATE MACID'");
                     if (dt_settings.Rows.Count > 0)
                     {
                         ENABLEVALIDATEMACID = Convert.ToBoolean(Convert.ToInt32(dt_settings.Rows[0][0].ToString()));
@@ -74,7 +76,7 @@ namespace MictcoWebService.Controllers
                     }
 
                     //sql = "select gu_user_id,gu_name,ur_name,gl_name from gnl_users inner join gnl_user_roles on gnl_users.gu_ur_id=gnl_user_roles.ur_id left join gnl_location on gu_location_id=gl_id where  gu_name = '" + user.userName + "' and gu_pass = '" + user.password + "' and gu_active = 1";
-                    DataTable userRoles = ussvr.dbReaderFill(sql);
+                    DataTable userRoles = Fill(conn, sql);
 
                     if (userRoles.Rows.Count <= 0)
                     {
@@ -108,7 +110,7 @@ namespace MictcoWebService.Controllers
 
 
 
-                    DataTable dt = ussvr.dbReaderFill(loginQuery);
+                    DataTable dt = Fill(conn, loginQuery);
                     if (dt.Rows.Count == 1)
                     {
 
@@ -169,12 +171,21 @@ namespace MictcoWebService.Controllers
                         {
                             authHeader = authHeader.Replace("Bearer ", "");
 
-                            var tokenS = handler.ReadToken(authHeader) as JwtSecurityToken;
+                            var principal = handler.ValidateToken(authHeader, new TokenValidationParameters
+                            {
+                                ValidateIssuer = true,
+                                ValidateAudience = true,
+                                ValidAudience = _configuration["JWT:ValidAudience"],
+                                ValidIssuer = _configuration["JWT:ValidIssuer"],
+                                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
+                                ValidateLifetime = true,
+                                ClockSkew = TimeSpan.FromMinutes(2)
+                            }, out _);
 
-                            d_host = tokenS.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Actor)?.Value ?? "";
-                            d_database = tokenS.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value ?? "";
-                            d_username = tokenS.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Gender)?.Value ?? "";
-                            d_password = tokenS.Claims.FirstOrDefault(c => c.Type == ClaimTypes.DateOfBirth)?.Value ?? "";
+                            d_host = principal.FindFirst(ClaimTypes.Actor)?.Value ?? "";
+                            d_database = principal.FindFirst(ClaimTypes.GivenName)?.Value ?? "";
+                            d_username = principal.FindFirst(ClaimTypes.Gender)?.Value ?? "";
+                            d_password = principal.FindFirst(ClaimTypes.DateOfBirth)?.Value ?? "";
                         }
 
                         var authClaims = new List<Claim>
@@ -221,7 +232,7 @@ namespace MictcoWebService.Controllers
                             );
 
                         String location_name = "";
-                        DataTable location_dt = ussvr.dbReaderFill("select gl_name from gnl_location where gl_id = '" + user.location + "'");
+                        DataTable location_dt = Fill(conn, "select gl_name from gnl_location where gl_id = '" + user.location + "'");
                         if (location_dt != null)
                         {
                             if (location_dt.Rows.Count > 0)
@@ -229,7 +240,7 @@ namespace MictcoWebService.Controllers
                         }
 
                         String tax_calc = "";
-                        DataTable tax_calc_dt = ussvr.dbReaderFill("select gs_value from gnl_settings where gs_name = 'GSTCALC'");
+                        DataTable tax_calc_dt = Fill(conn, "select gs_value from gnl_settings where gs_name = 'GSTCALC'");
                         if (tax_calc_dt != null)
                         {
                             if (tax_calc_dt.Rows.Count > 0)
@@ -248,12 +259,12 @@ namespace MictcoWebService.Controllers
                         };
 
                         sql = "select * from android_settings";
-                        DataTable android_impoa = ussvr.dbReaderFill(sql);
+                        DataTable android_impoa = Fill(conn, sql);
 
                         //salesman
                         DataTable salessman_dt = null;
 
-                        DataTable dt_ = ussvr.dbReaderFill("select gs_status from gnl_settings where gs_value = 'ENABLESOFTWAREASWORKSHOP'");
+                        DataTable dt_ = Fill(conn, "select gs_status from gnl_settings where gs_value = 'ENABLESOFTWAREASWORKSHOP'");
                         int workOrderStatus = Convert.ToInt32(dt_.Rows[0][0].ToString());
                         DataTable woStatus = new DataTable();
                         string str_erp_type = "";
@@ -268,11 +279,11 @@ namespace MictcoWebService.Controllers
 
                         if (Convert.ToInt32(gu_acc_id) > 0)
                         {
-                            salessman_dt = ussvr.dbReaderFill("SELECT as_name as label,cast(as_id as Int) as value,as_rate_type from acc_subhead where as_id='" + gu_acc_id + "'");
+                            salessman_dt = Fill(conn, "SELECT as_name as label,cast(as_id as Int) as value,as_rate_type from acc_subhead where as_id='" + gu_acc_id + "'");
                         }
 
                         //cashaccount//
-                        DataTable cash_account_dt = ussvr.dbReaderFill("SELECT as_name as label,cast(as_id as Int) as value from acc_subhead where as_id='" + gu_user_cash_id + "'");
+                        DataTable cash_account_dt = Fill(conn, "SELECT as_name as label,cast(as_id as Int) as value from acc_subhead where as_id='" + gu_user_cash_id + "'");
 
                         return Ok(new
                         {
@@ -311,35 +322,33 @@ namespace MictcoWebService.Controllers
 
 
         [HttpGet("user-locations")]
-        public IActionResult getUserLocations()
+        public async Task<IActionResult> getUserLocations()
         {
             UserSqlServer usqlre = new UserSqlServer(this, validateUser: false);
+            using SqlConnection conn = await OpenLoginConnectionAsync(usqlre);
+
             Dictionary<string, DataTable> hash = new Dictionary<string, DataTable>();
             DataTable dt_area = new DataTable();
             DataTable dt_route = new DataTable();
-            string sql = "select cast(gl_id as nvarchar(50)) as gl_id,gl_name from gnl_location";
-            DataTable locations = usqlre.dbReaderFill(sql);
-            usqlre.close();
+            DataTable locations = Fill(conn, "select cast(gl_id as nvarchar(50)) as gl_id,gl_name from gnl_location");
             hash.Add("loactions", locations);
+
             bool AREAWISELOGIN = false;
             bool ROUTWISELOGIN = false;
-            DataTable dt_settings = usqlre.dbReaderFill("SELECT ans_status FROM android_settings WHERE ans_name='AREAWISE LOGIN'");
+            DataTable dt_settings = Fill(conn, "SELECT ans_status FROM android_settings WHERE ans_name='AREAWISE LOGIN'");
             if (dt_settings.Rows.Count > 0)
                 AREAWISELOGIN = Convert.ToBoolean(Convert.ToInt32(dt_settings.Rows[0][0].ToString()));
             if (AREAWISELOGIN)
             {
-                string sqlarea = "select cast(area_id as nvarchar(50)) as value,area_name as label from acc_area";
-                dt_area = usqlre.dbReaderFill(sqlarea);
-                usqlre.close();
+                dt_area = Fill(conn, "select cast(area_id as nvarchar(50)) as value,area_name as label from acc_area");
             }
-            DataTable dt_rout= usqlre.dbReaderFill("SELECT ans_status FROM android_settings WHERE ans_name='ROUTEWISE LOGIN'");
+
+            DataTable dt_rout = Fill(conn, "SELECT ans_status FROM android_settings WHERE ans_name='ROUTEWISE LOGIN'");
             if (dt_rout.Rows.Count > 0)
                 ROUTWISELOGIN = Convert.ToBoolean(Convert.ToInt32(dt_rout.Rows[0][0].ToString()));
             if (ROUTWISELOGIN)
             {
-                string sqlroute= "select cast(r_id as nvarchar(50)) as value,r_name as label from inv_rout_reg";
-                dt_route = usqlre.dbReaderFill(sqlroute);
-                usqlre.close();
+                dt_route = Fill(conn, "select cast(r_id as nvarchar(50)) as value,r_name as label from inv_rout_reg");
             }
 
             hash.Add("area", dt_area);
@@ -347,17 +356,16 @@ namespace MictcoWebService.Controllers
             return Ok(ReportModelContext.searializeDt(hash));
         }
         [HttpGet("check-route-wise-login")]
-        public IActionResult CheckRouteWiseLogin()
+        public async Task<IActionResult> CheckRouteWiseLogin()
         {
             UserSqlServer usqlre = new UserSqlServer(this, validateUser: false);
 
             try
             {
+                using SqlConnection conn = await OpenLoginConnectionAsync(usqlre);
                 bool isEnabled = false;
 
-                string sql = @"select ans_status from android_settings where ans_name = 'ENABLE SINGLE ROUTEWISE LOGIN'";
-
-                DataTable dt = usqlre.dbReaderFill(sql);
+                DataTable dt = Fill(conn, "select ans_status from android_settings where ans_name = 'ENABLE SINGLE ROUTEWISE LOGIN'");
 
                 if (dt.Rows.Count > 0)
                 {
@@ -380,10 +388,37 @@ namespace MictcoWebService.Controllers
                     message = ex.Message
                 });
             }
-            finally
+        }
+
+        private async Task<SqlConnection> OpenLoginConnectionAsync(UserSqlServer server)
+        {
+            string connectionString = server.getConnectionString();
+            if (string.IsNullOrWhiteSpace(connectionString))
+                throw new InvalidOperationException("Database connection string is missing.");
+
+            var connection = new SqlConnection(connectionString);
+            try
             {
-                usqlre.close();
+                await connection.OpenAsync(HttpContext.RequestAborted);
+                return connection;
             }
+            catch
+            {
+                connection.Dispose();
+                throw;
+            }
+        }
+
+        private static DataTable Fill(SqlConnection connection, string sql)
+        {
+            using var command = new SqlCommand(sql, connection)
+            {
+                CommandTimeout = 30
+            };
+            using var adapter = new SqlDataAdapter(command);
+            var table = new DataTable();
+            adapter.Fill(table);
+            return table;
         }
 
     }

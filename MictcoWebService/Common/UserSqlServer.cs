@@ -13,6 +13,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 using System.Threading;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
@@ -99,7 +101,10 @@ namespace MictcoWebService.Common
                 authHeader = authHeader.Replace("Bearer ", "");
 
                 var handler = new JwtSecurityTokenHandler();
-                var token = handler.ReadToken(authHeader) as JwtSecurityToken;
+                handler.ValidateToken(authHeader, JwtValidationParameters(), out SecurityToken validatedToken);
+                var token = validatedToken as JwtSecurityToken;
+                if (token == null)
+                    throw new UnauthorizedAccessException("User is not authorized.");
 
                 // Read DB claims (if available)
                 this.server = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Actor)?.Value ?? "";
@@ -154,13 +159,36 @@ namespace MictcoWebService.Common
 
             RegisterConnectionRelease();
 
-            //if (validateUser)
-            //{
-            //    if (!IsUserValid())
-            //    {
-            //        throw new UnauthorizedAccessException("User is not authorized.");
-            //    }
-            //}
+            if (validateUser && int.TryParse(this.userId, out var parsedUserId) && parsedUserId > 0)
+            {
+                if (!IsUserValid())
+                    throw new UnauthorizedAccessException("User is not authorized.");
+            }
+        }
+
+        private static TokenValidationParameters _jwtValidation;
+
+        private static TokenValidationParameters JwtValidationParameters()
+        {
+            if (_jwtValidation != null)
+                return _jwtValidation;
+
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            _jwtValidation = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidAudience = configuration["JWT:ValidAudience"],
+                ValidIssuer = configuration["JWT:ValidIssuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"] ?? "")),
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.FromMinutes(2)
+            };
+            return _jwtValidation;
         }
 
         public string getConnectionString()
@@ -2765,21 +2793,23 @@ namespace MictcoWebService.Common
         {
             try
             {
-                if (!OpenConnection())
+                if (!int.TryParse(userId, out var uid) || uid <= 0)
+                    return false;
+                if (string.IsNullOrWhiteSpace(connetionString))
                     return false;
 
-                if (!int.TryParse(userId, out var uid))
-                    return false;
+                // Own connection so this check does not use the shared shop connection,
+                // which may already be closed or waiting on the pool.
+                using var conn = new SqlConnection(connetionString);
+                conn.Open();
 
-                // If an employee resigns, keep the row (FK/history) but disable login by setting gu_active = 0.
-                // This check runs on every authorized request (via UserSqlServer ctor validateUser=true).
                 string guPass = null;
-
                 using (var cmd = new SqlCommand(
                     "SELECT TOP 1 gu_active, gu_pass FROM gnl_users WHERE gu_user_id = @uid",
-                    shop))
+                    conn))
                 {
-                    cmd.Parameters.AddWithValue("@uid", uid);
+                    cmd.CommandTimeout = 30;
+                    cmd.Parameters.Add("@uid", SqlDbType.Int).Value = uid;
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -2795,44 +2825,30 @@ namespace MictcoWebService.Common
                     }
                 }
 
-                // Password fingerprint check only when userid is listed in gnl_pass_validate.
-                if (IsPassValidateUser(uid))
-                {
-                    if (string.IsNullOrEmpty(tokenPassHash))
-                        return false;
+                if (!IsPassValidateUser(conn, uid))
+                    return true;
 
-                    string tokenPass = CommonHelper.tokenDecrypt(tokenPassHash);
+                if (string.IsNullOrEmpty(tokenPassHash))
+                    return false;
 
-                    if (!string.Equals(
-                            tokenPass,
-                            guPass ?? "",
-                            StringComparison.OrdinalIgnoreCase))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
+                string tokenPass = CommonHelper.tokenDecrypt(tokenPassHash);
+                return string.Equals(tokenPass, guPass ?? "", StringComparison.OrdinalIgnoreCase);
             }
             catch (Exception ex)
             {
-                // Keep the existing validation behavior,
-                // but log the actual reason for debugging.
+                lastError = ex.Message;
                 Console.WriteLine("IsUserValid ERROR: " + ex.ToString());
-
                 return false;
             }
         }
-        void EnsurePassValidateTable()
+
+        void EnsurePassValidateTable(SqlConnection connection)
         {
             if (_passValidateTableEnsured)
                 return;
 
             try
             {
-                if (!OpenConnection())
-                    return;
-
                 using (var cmd = new SqlCommand(@"
                 IF OBJECT_ID(N'dbo.gnl_pass_validate', N'U') IS NULL
                 BEGIN
@@ -2840,8 +2856,9 @@ namespace MictcoWebService.Common
                     (
                         gu_user_id INT NOT NULL PRIMARY KEY
                     );
-                END", shop))
+                END", connection))
                 {
+                    cmd.CommandTimeout = 30;
                     cmd.ExecuteNonQuery();
                 }
                 _passValidateTableEnsured = true;
@@ -2852,14 +2869,17 @@ namespace MictcoWebService.Common
             }
         }
 
-        bool IsPassValidateUser(int uid)
+        bool IsPassValidateUser(SqlConnection connection, int uid)
         {
             try
             {
-                EnsurePassValidateTable();
-                using (var cmd = new SqlCommand("SELECT TOP 1 1 FROM dbo.gnl_pass_validate WHERE gu_user_id = @uid", shop))
+                EnsurePassValidateTable(connection);
+                using (var cmd = new SqlCommand(
+                    "SELECT TOP 1 1 FROM dbo.gnl_pass_validate WHERE gu_user_id = @uid",
+                    connection))
                 {
-                    cmd.Parameters.AddWithValue("@uid", uid);
+                    cmd.CommandTimeout = 30;
+                    cmd.Parameters.Add("@uid", SqlDbType.Int).Value = uid;
                     object result = cmd.ExecuteScalar();
                     return result != null && result != DBNull.Value;
                 }

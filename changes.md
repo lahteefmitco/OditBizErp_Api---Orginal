@@ -1,6 +1,6 @@
 # Changes
 
-Connection pooling is enabled for SQL Server. Each pool allows at most 50 connections. Opening a connection waits up to 5 minutes (300 seconds).
+Connection pooling is enabled for SQL Server. Each pool allows at most 100 connections. Opening a connection waits up to 2 minutes (120 seconds).
 
 ## Files
 
@@ -17,7 +17,7 @@ Connection pooling is enabled for SQL Server. Each pool allows at most 50 connec
 
 ## Connection release
 
-Repeated calls were leaving SQL connections checked out, so later requests waited the full 5-minute pool timeout. Connections are now returned to the pool when the request finishes. `get-tickets` also closes its connection as soon as the query completes.
+Repeated calls were leaving SQL connections checked out, so later requests waited the full pool timeout. Connections are now returned to the pool when the request finishes. `get-tickets` also closes its connection as soon as the query completes.
 
 - MictcoWebService/Common/UserSqlServer.cs
 - MictcoWebService/Controllers/ServiceAppController.cs
