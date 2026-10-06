@@ -194,19 +194,10 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "get_complaint");
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "get_complaint"));
 
                 // Prepare object
                 var responseObj = new
@@ -241,19 +232,11 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@StatementType", "getById_complaint");
-                cmd.Parameters.AddWithValue("@scr_id", id);
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "getById_complaint"),
+                    new SqlParameter("@scr_id", id));
 
                 // Prepare object
                 var responseObj = new
@@ -288,19 +271,11 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@StatementType", "getByMob_complaint");
-                cmd.Parameters.AddWithValue("@scr_mobile_no", mobile);
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "getByMob_complaint"),
+                    new SqlParameter("@scr_mobile_no", (object)mobile ?? DBNull.Value));
 
                 // Prepare object
                 var responseObj = new
@@ -335,19 +310,10 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "get_category");
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "get_category"));
 
                 // Prepare object
                 var responseObj = new
@@ -379,21 +345,12 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "insert_company");
-                cmd.Parameters.AddWithValue("@company_name", model.name);
-                cmd.Parameters.AddWithValue("@company_remarks", model.remarks);
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "insert_company"),
+                    new SqlParameter("@company_name", (object)model.name ?? DBNull.Value),
+                    new SqlParameter("@company_remarks", (object)model.remarks ?? DBNull.Value));
 
                 var responseObj = new
                 {
@@ -424,19 +381,10 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "get_company");
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "get_company"));
 
                 // Prepare object
                 var responseObj = new
@@ -468,21 +416,12 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "insert_rout");
-                cmd.Parameters.AddWithValue("@name", model.name);
-                cmd.Parameters.AddWithValue("@remarks", model.remarks);
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "insert_rout"),
+                    new SqlParameter("@name", (object)model.name ?? DBNull.Value),
+                    new SqlParameter("@remarks", (object)model.remarks ?? DBNull.Value));
 
                 var responseObj = new
                 {
@@ -513,19 +452,10 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "get_rout");
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "get_rout"));
 
                 // Prepare object
                 var responseObj = new
@@ -557,21 +487,12 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "insert_color");
-                cmd.Parameters.AddWithValue("@name", model.name);
-                cmd.Parameters.AddWithValue("@remarks", model.remarks);
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "insert_color"),
+                    new SqlParameter("@name", (object)model.name ?? DBNull.Value),
+                    new SqlParameter("@remarks", (object)model.remarks ?? DBNull.Value));
 
                 var responseObj = new
                 {
@@ -601,21 +522,10 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                DataTable dt = await ReadServiceTableAsync(
+                    "SELECT clr_id, clr_name, clr_remarks FROM inv_color ORDER BY clr_name",
+                    CommandType.Text);
 
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "get_color");
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
-
-                // Prepare object
                 var responseObj = new
                 {
                     status = true,
@@ -624,9 +534,7 @@ namespace MictcoWebService.Controllers
                     data = dt
                 };
 
-                // Convert to JSON string
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
-
                 return Content(json, "application/json");
             }
             catch (Exception ex)
@@ -645,22 +553,13 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "insert_model");
-                cmd.Parameters.AddWithValue("@name", model.name);
-                cmd.Parameters.AddWithValue("@remarks", model.remarks);
-                cmd.Parameters.AddWithValue("@model_company_id", model.model_company_id);
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "insert_model"),
+                    new SqlParameter("@name", (object)model.name ?? DBNull.Value),
+                    new SqlParameter("@remarks", (object)model.remarks ?? DBNull.Value),
+                    new SqlParameter("@model_company_id", model.model_company_id));
 
                 var responseObj = new
                 {
@@ -690,20 +589,11 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "get_model");
-                cmd.Parameters.AddWithValue("@model_company_id", model_company_id);
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "get_model"),
+                    new SqlParameter("@model_company_id", model_company_id));
 
                 // Prepare object
                 var responseObj = new
@@ -735,19 +625,10 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_acc_reg", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "Selectcash");
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_acc_reg",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "Selectcash"));
 
                 // Prepare object
                 var responseObj = new
@@ -779,19 +660,10 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_acc_reg", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "selectBank");
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_acc_reg",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "selectBank"));
 
                 // Prepare object
                 var responseObj = new
@@ -1807,18 +1679,10 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@StatementType", "get_qc_list");
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "get_qc_list"));
 
                 // Prepare object
                 var responseObj = new
@@ -1854,19 +1718,11 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@StatementType", "getById_qc_list");
-                cmd.Parameters.AddWithValue("@qc_id", id);
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "getById_qc_list"),
+                    new SqlParameter("@qc_id", id));
 
                 // Prepare object
                 var responseObj = new
@@ -2039,19 +1895,10 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "get_items_collected");
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "get_items_collected"));
 
                 var responseObj = new
                 {
@@ -2082,20 +1929,11 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "getById_items_collected");
-                cmd.Parameters.AddWithValue("@iic_id", id);
-
-                SqlDataReader dr = await cmd.ExecuteReaderAsync();
-
-                DataTable dt = new DataTable();
-                dt.Load(dr);
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "getById_items_collected"),
+                    new SqlParameter("@iic_id", id));
 
                 var responseObj = new
                 {
@@ -2123,16 +1961,10 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@StatementType", "descriptionList");
-
-                DataTable dt = new DataTable();
-                dt.Load(cmd.ExecuteReader());
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "descriptionList"));
 
                 var responseObj = new
                 {
@@ -2206,19 +2038,10 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "getAllTechnician");
-
-                DataTable dt = new DataTable();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(dt);
-                }
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "getAllTechnician"));
 
                 var responseObj = new
                 {
@@ -2511,72 +2334,93 @@ namespace MictcoWebService.Controllers
                     });
                 }
 
-                using SqlCommand cmd = new SqlCommand(
-                    "Sp_Service_Complaint_App",
-                    usqlre.shop);
+                const string ticketSql = @"
+SELECT
+    s.si_entryno,
+    s.si_date AS TicketDate,
+    s.si_cust_name,
+    c.scr_mobile_no,
+    s.si_company,
+    s.si_model,
+    s.si_assign_to,
+    s.si_remarks AS EstimateCost,
+    s.si_deliverydate,
+    s.si_finish,
+    t.as_name AS Technician,
+    ass.AssignedDate,
+    s.si_return_entryno,
+    s.si_color,
+    clr.clr_name
+FROM inv_sales_inf s
+LEFT JOIN acc_subhead t ON t.as_id = s.si_assign_to
+LEFT JOIN inv_service_complaint_reg c ON c.scr_id = s.si_coupon_no
+LEFT JOIN inv_color clr ON clr.clr_id = s.si_color
+LEFT JOIN (
+    SELECT ssh_ticket_id, MAX(ssh_changed_date) AS AssignedDate
+    FROM inv_service_status_history
+    WHERE ssh_status IN (N'Assigned', N'Relocate')
+    GROUP BY ssh_ticket_id
+) ass ON ass.ssh_ticket_id = s.si_entryno
+WHERE s.si_str_id = 12
+  AND ISNULL(s.si_coupon_no, 0) <> 0
+  AND (
+        (ISNULL(@si_other_remarks, N'') = N'' AND s.si_finish IN (N'Unassigned', N'Relocate'))
+        OR (ISNULL(@si_other_remarks, N'') <> N'' AND s.si_finish = @si_other_remarks)
+      )
+  AND (@from_date IS NULL OR s.si_date >= @from_date)
+  AND (@to_date IS NULL OR s.si_date < DATEADD(DAY, 1, @to_date))
+  AND (@si_entryno IS NULL OR s.si_entryno = @si_entryno)
+  AND (@si_acc_id IS NULL OR s.si_acc_id = @si_acc_id)
+  AND (@si_assign_to IS NULL OR s.si_assign_to = @si_assign_to)
+  AND (@rout_id IS NULL OR c.scr_rout_id = @rout_id)
+ORDER BY s.si_entryno DESC";
 
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandTimeout = 120;
-
-                cmd.Parameters.AddWithValue(
-                    "@StatementType",
-                    "getTickets");
-
-                cmd.Parameters.AddWithValue(
-                    "@si_other_remarks",
-                    string.IsNullOrWhiteSpace(model.status)
-                        ? (object)DBNull.Value
-                        : model.status);
-
-                cmd.Parameters.AddWithValue(
-                    "@si_user_id",
-                    usqlre.userId);
-
-                cmd.Parameters.AddWithValue(
-                    "@from_date",
-                    model.fromDate.HasValue
-                        ? (object)model.fromDate.Value
-                        : DBNull.Value);
-
-                cmd.Parameters.AddWithValue(
-                    "@to_date",
-                    model.toDate.HasValue
-                        ? (object)model.toDate.Value
-                        : DBNull.Value);
-
-                cmd.Parameters.AddWithValue(
-                    "@si_entryno",
-                    model.ticketNo.HasValue
-                        ? (object)model.ticketNo.Value
-                        : DBNull.Value);
-
-                cmd.Parameters.AddWithValue(
-                    "@si_acc_id",
-                    model.customerId.HasValue
-                        ? (object)model.customerId.Value
-                        : DBNull.Value);
-
-                cmd.Parameters.AddWithValue(
-                    "@si_assign_to",
-                    model.TechnicianId.HasValue
-                        ? (object)model.TechnicianId.Value
-                        : DBNull.Value);
-
-                cmd.Parameters.AddWithValue(
-                    "@rout_id",
-                    model.routeId.HasValue
-                        ? (object)model.routeId.Value
-                        : DBNull.Value);
-
+                const string lendSql = @"
+SELECT
+    l.li_entryno,
+    l.li_in,
+    l.li_out,
+    l.li_remarks,
+    l.li_ir_id,
+    i.ir_name,
+    l.li_ir_mrp,
+    l.li_ift_id
+FROM inv_sales_inf s
+INNER JOIN inv_lend_item_transactions l
+    ON l.li_entryno = s.si_entryno
+   AND l.li_form = N'WORKORDER QUOTATION'
+LEFT JOIN inv_item_reg i ON i.ir_id = l.li_ir_id
+LEFT JOIN inv_service_complaint_reg c ON c.scr_id = s.si_coupon_no
+WHERE s.si_str_id = 12
+  AND ISNULL(s.si_coupon_no, 0) <> 0
+  AND (
+        (ISNULL(@si_other_remarks, N'') = N'' AND s.si_finish IN (N'Unassigned', N'Relocate'))
+        OR (ISNULL(@si_other_remarks, N'') <> N'' AND s.si_finish = @si_other_remarks)
+      )
+  AND (@from_date IS NULL OR s.si_date >= @from_date)
+  AND (@to_date IS NULL OR s.si_date < DATEADD(DAY, 1, @to_date))
+  AND (@si_entryno IS NULL OR s.si_entryno = @si_entryno)
+  AND (@si_acc_id IS NULL OR s.si_acc_id = @si_acc_id)
+  AND (@si_assign_to IS NULL OR s.si_assign_to = @si_assign_to)
+  AND (@rout_id IS NULL OR c.scr_rout_id = @rout_id)";
 
                 ticketTable = new DataTable();
                 lendTable = new DataTable();
 
-                using (SqlDataReader reader = await cmd.ExecuteReaderAsync(HttpContext.RequestAborted))
+                using (SqlCommand cmd = new SqlCommand(ticketSql, usqlre.shop))
                 {
+                    cmd.CommandTimeout = 60;
+                    AddTicketFilters(cmd, model);
+                    using SqlDataReader reader = await cmd.ExecuteReaderAsync(HttpContext.RequestAborted);
                     ticketTable.Load(reader);
-                    if (!reader.IsClosed)
-                        lendTable.Load(reader);
+                }
+
+                using (SqlCommand cmd = new SqlCommand(lendSql, usqlre.shop))
+                {
+                    cmd.CommandTimeout = 60;
+                    AddTicketFilters(cmd, model);
+                    using SqlDataReader reader = await cmd.ExecuteReaderAsync(HttpContext.RequestAborted);
+                    lendTable.Load(reader);
                 }
                 }
                 finally
@@ -2735,6 +2579,61 @@ namespace MictcoWebService.Controllers
                 });
             }
         }
+
+        /// <summary>
+        /// Runs a command on a connection this request owns.
+        /// The shared UserSqlServer connection can already be closed when a command starts.
+        /// </summary>
+        private async Task<DataTable> ReadServiceTableAsync(
+            string commandText,
+            CommandType commandType,
+            params SqlParameter[] parameters)
+        {
+            UserSqlServer usqlre = new UserSqlServer(this);
+            string connectionString = usqlre.getConnectionString();
+            if (string.IsNullOrWhiteSpace(connectionString))
+                throw new InvalidOperationException("Database connection string is missing.");
+
+            using SqlConnection conn = new SqlConnection(connectionString);
+            await conn.OpenAsync(HttpContext.RequestAborted);
+
+            using SqlCommand cmd = new SqlCommand(commandText, conn)
+            {
+                CommandType = commandType,
+                CommandTimeout = 30
+            };
+            if (parameters != null)
+            {
+                foreach (SqlParameter parameter in parameters)
+                    cmd.Parameters.Add(parameter);
+            }
+
+            DataTable table = new DataTable();
+            using (SqlDataReader reader = await cmd.ExecuteReaderAsync(HttpContext.RequestAborted))
+            {
+                table.Load(reader);
+            }
+            return table;
+        }
+
+        private static void AddTicketFilters(SqlCommand cmd, TicketFiltrationModel model)
+        {
+            cmd.Parameters.Add("@si_other_remarks", SqlDbType.NVarChar, -1).Value =
+                string.IsNullOrWhiteSpace(model.status) ? DBNull.Value : model.status;
+            cmd.Parameters.Add("@from_date", SqlDbType.Date).Value =
+                model.fromDate.HasValue ? model.fromDate.Value.Date : DBNull.Value;
+            cmd.Parameters.Add("@to_date", SqlDbType.Date).Value =
+                model.toDate.HasValue ? model.toDate.Value.Date : DBNull.Value;
+            cmd.Parameters.Add("@si_entryno", SqlDbType.Int).Value =
+                model.ticketNo.HasValue ? model.ticketNo.Value : DBNull.Value;
+            cmd.Parameters.Add("@si_acc_id", SqlDbType.Int).Value =
+                model.customerId.HasValue ? model.customerId.Value : DBNull.Value;
+            cmd.Parameters.Add("@si_assign_to", SqlDbType.Int).Value =
+                model.TechnicianId.HasValue ? model.TechnicianId.Value : DBNull.Value;
+            cmd.Parameters.Add("@rout_id", SqlDbType.Int).Value =
+                model.routeId.HasValue ? model.routeId.Value : DBNull.Value;
+        }
+
         [HttpGet("get-tickets-by-id")]
         public async Task<IActionResult> GetTicketsById(int Id)
         {
@@ -2798,21 +2697,10 @@ namespace MictcoWebService.Controllers
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "technician_list");
-
-                DataTable dt = new DataTable();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(dt);
-                }
-
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@StatementType", "technician_list"));
 
                 var responseObj = new
                 {
@@ -5146,21 +5034,15 @@ namespace MictcoWebService.Controllers
             }
         }
         [HttpGet("get-service-item")]
-        public IActionResult GetServiceItem(string? searchKey)
+        public async Task<IActionResult> GetServiceItem(string? searchKey)
         {
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@ir_name", (object)searchKey ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@StatementType", "serviceItemList");
-
-                DataTable dt = new DataTable();
-                dt.Load(cmd.ExecuteReader());
-                usqlre.close();
+                DataTable dt = await ReadServiceTableAsync(
+                    "Sp_Service_Complaint_App",
+                    CommandType.StoredProcedure,
+                    new SqlParameter("@ir_name", (object)searchKey ?? DBNull.Value),
+                    new SqlParameter("@StatementType", "serviceItemList"));
 
                 var responseObj = new
                 {
