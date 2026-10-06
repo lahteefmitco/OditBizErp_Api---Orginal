@@ -300,10 +300,7 @@ namespace MictcoWebService.Common
                 da.Fill(_temp);
                 return _temp;
             }
-            else
-            {
-                return null;
-            }
+            return new DataTable();
         }
         public object dbScalar(string qry)
         {

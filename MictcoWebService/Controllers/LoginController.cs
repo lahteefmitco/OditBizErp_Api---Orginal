@@ -324,36 +324,35 @@ namespace MictcoWebService.Controllers
         [HttpGet("user-locations")]
         public async Task<IActionResult> getUserLocations()
         {
-            UserSqlServer usqlre = new UserSqlServer(this, validateUser: false);
-            using SqlConnection conn = await OpenLoginConnectionAsync(usqlre);
-
-            Dictionary<string, DataTable> hash = new Dictionary<string, DataTable>();
-            DataTable dt_area = new DataTable();
-            DataTable dt_route = new DataTable();
-            DataTable locations = Fill(conn, "select cast(gl_id as nvarchar(50)) as gl_id,gl_name from gnl_location");
-            hash.Add("loactions", locations);
-
-            bool AREAWISELOGIN = false;
-            bool ROUTWISELOGIN = false;
-            DataTable dt_settings = Fill(conn, "SELECT ans_status FROM android_settings WHERE ans_name='AREAWISE LOGIN'");
-            if (dt_settings.Rows.Count > 0)
-                AREAWISELOGIN = Convert.ToBoolean(Convert.ToInt32(dt_settings.Rows[0][0].ToString()));
-            if (AREAWISELOGIN)
+            try
             {
-                dt_area = Fill(conn, "select cast(area_id as nvarchar(50)) as value,area_name as label from acc_area");
-            }
+                UserSqlServer usqlre = new UserSqlServer(this, validateUser: false);
+                using SqlConnection conn = await OpenLoginConnectionAsync(usqlre);
 
-            DataTable dt_rout = Fill(conn, "SELECT ans_status FROM android_settings WHERE ans_name='ROUTEWISE LOGIN'");
-            if (dt_rout.Rows.Count > 0)
-                ROUTWISELOGIN = Convert.ToBoolean(Convert.ToInt32(dt_rout.Rows[0][0].ToString()));
-            if (ROUTWISELOGIN)
+                Dictionary<string, DataTable> hash = new Dictionary<string, DataTable>();
+                DataTable locations = Fill(conn, "select cast(gl_id as nvarchar(50)) as gl_id,gl_name from gnl_location");
+                hash.Add("loactions", locations ?? new DataTable());
+
+                DataTable dt_area = new DataTable();
+                if (SettingIsOn(Fill(conn, "SELECT ans_status FROM android_settings WHERE ans_name='AREAWISE LOGIN'")))
+                    dt_area = Fill(conn, "select cast(area_id as nvarchar(50)) as value,area_name as label from acc_area") ?? new DataTable();
+
+                DataTable dt_route = new DataTable();
+                if (SettingIsOn(Fill(conn, "SELECT ans_status FROM android_settings WHERE ans_name='ROUTEWISE LOGIN'")))
+                    dt_route = Fill(conn, "select cast(r_id as nvarchar(50)) as value,r_name as label from inv_rout_reg") ?? new DataTable();
+
+                hash.Add("area", dt_area);
+                hash.Add("route", dt_route);
+                return Ok(ReportModelContext.searializeDt(hash));
+            }
+            catch (Exception ex)
             {
-                dt_route = Fill(conn, "select cast(r_id as nvarchar(50)) as value,r_name as label from inv_rout_reg");
+                return StatusCode(500, new
+                {
+                    status = false,
+                    message = ex.Message
+                });
             }
-
-            hash.Add("area", dt_area);
-            hash.Add("route", dt_route);
-            return Ok(ReportModelContext.searializeDt(hash));
         }
         [HttpGet("check-route-wise-login")]
         public async Task<IActionResult> CheckRouteWiseLogin()
@@ -407,6 +406,18 @@ namespace MictcoWebService.Controllers
                 connection.Dispose();
                 throw;
             }
+        }
+
+        private static bool SettingIsOn(DataTable table)
+        {
+            if (table == null || table.Rows.Count == 0 || table.Rows[0][0] == DBNull.Value)
+                return false;
+
+            string value = table.Rows[0][0].ToString();
+            if (string.IsNullOrWhiteSpace(value))
+                return false;
+
+            return Convert.ToBoolean(Convert.ToInt32(value));
         }
 
         private static DataTable Fill(SqlConnection connection, string sql)
