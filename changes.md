@@ -81,4 +81,34 @@ ON dbo.inv_service_status_history (ssh_status, ssh_ticket_id, ssh_changed_date);
 
 File: `MictcoWebService/Controllers/ServiceAppController.cs`
 
-Publish this build to IIS before calling these URLs on `mictcoserver2`.
+## Login endpoints held the connection across several queries
+
+`GET /user-locations` from Flutter aborted with `DioException [connection timeout]` after 5 minutes. The action closed the SQL connection after the location query, then opened it again for the area and route settings. Each reopen could wait the full pool timeout before any response was sent.
+
+`LoginController` now opens one connection for the whole action and runs each query with a 30-second command timeout.
+
+File: `MictcoWebService/Controllers/LoginController.cs`
+
+- `user-auth` (lines 39–320): one connection from `OpenLoginConnectionAsync` (lines 392–409). Queries use `Fill` (lines 423–433).
+- `user-locations` (lines 324–356): locations, `AREAWISE LOGIN`, and `ROUTEWISE LOGIN` share that connection. Response keys stay `loactions`, `area`, and `route`.
+- `check-route-wise-login` (lines 357–390): same connection pattern for `ENABLE SINGLE ROUTEWISE LOGIN`.
+- `SettingIsOn` (lines 411–421): a missing or blank settings row means the flag is off.
+
+## user-locations null reference
+
+The published `getUserLocations` was still synchronous. After `close()`, `dbReaderFill` returned null, and line 327 read `dt_settings.Rows`, which threw `System.NullReferenceException`.
+
+- `user-locations` (lines 324–356) is async, checks the setting with `SettingIsOn`, and returns HTTP 500 with the error message if the database call fails.
+- `UserSqlServer.dbReaderFill` (lines 293–304) returns an empty `DataTable` when the connection does not open, so `.Rows` is no longer called on null.
+
+## JWT checks
+
+A bearer token is checked for issuer, audience, signature, and expiry (2-minute clock skew) before its claims are used.
+
+File: `MictcoWebService/Common/UserSqlServer.cs`
+
+- Constructor (lines 93–167): `ValidateToken` through `JwtValidationParameters` (lines 171–192). Database claims still select the company database. If the name identifier is a numeric user id greater than 0, `IsUserValid` (lines 2789–2840) checks `gnl_users.gu_active` on its own connection.
+- `user-auth` and `user-locations` pass `validateUser: false`. The company token’s name identifier is an email (`cellcraft@rak`), not `gu_user_id`, so that database user check is skipped. Signature, issuer, audience, and expiry are still checked.
+- `user-auth` (LoginController lines 174–183) validates the incoming company token again before copying the database claims into the user token.
+
+Publish this build to IIS before calling these URLs on `mictcoserver2`. The site at `D:\OditBizErp_Api\New folder\...` is still running the old synchronous `getUserLocations`.
