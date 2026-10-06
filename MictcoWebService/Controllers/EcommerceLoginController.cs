@@ -27,7 +27,7 @@ namespace MictcoWebService.Controllers
         public EcommerceLoginController(IConfiguration configuration)
         {
             _configuration = configuration;
-            _connectionString = configuration.GetConnectionString("ConnStr");
+            _connectionString = SqlConnectionPool.Apply(configuration.GetConnectionString("ConnStr"));
         }
         [HttpPost("ecommerce-login")]
         public async Task<IActionResult> EcommerceLogin(string MobileNo)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MictcoWebService.Common;
 using MictcoWebService.Models;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace MictcoWebService.Controllers
             //connetionString = @"Data Source=192.168.1.95;Initial Catalog=G7;User ID=sa;Password=wf";
             try
             {
-                connetionString = @"Data Source = 35.244.38.164,1436\\WEBDB; Initial Catalog = MOBIL_USERS; User ID = mictco; Password = Mis@#meizOn123@#LLP ";
+                connetionString = SqlConnectionPool.Apply(@"Data Source = 35.244.38.164,1436\\WEBDB; Initial Catalog = MOBIL_USERS; User ID = mictco; Password = Mis@#meizOn123@#LLP ");
                 SqlConnection shop = new SqlConnection(connetionString);
                 shop.Open();
 

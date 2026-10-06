@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using MictcoWebService.Authentication;
+using MictcoWebService.Common;
 using MictcoWebService.Hubs;
 using MictcoWebService.Models;
 using System;
@@ -26,7 +27,7 @@ namespace MictcoWebService.Controllers
         public EcartController(IConfiguration configuration)
         {
             _configuration = configuration;
-            _connectionString = configuration.GetConnectionString("ConnStr");
+            _connectionString = SqlConnectionPool.Apply(configuration.GetConnectionString("ConnStr"));
         }
         [Authorize(Roles = UserRoles.EcommerceUser)]
         [HttpGet("category-list-ecart")]

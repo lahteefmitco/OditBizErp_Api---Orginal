@@ -120,11 +120,11 @@ namespace MictcoWebService.Common
                 if (!string.IsNullOrWhiteSpace(this.server) &&
                     !string.IsNullOrWhiteSpace(this.database))
                 {
-                    connetionString =
+                    connetionString = SqlConnectionPool.Apply(
                         @"Data Source=" + CommonHelper.tokenDecrypt(this.server).Replace(":", ",") +
                         ";Initial Catalog=" + CommonHelper.tokenDecrypt(this.database) +
                         ";User ID=" + CommonHelper.tokenDecrypt(this.username) +
-                        ";Password=" + CommonHelper.tokenDecrypt(this.password);
+                        ";Password=" + CommonHelper.tokenDecrypt(this.password));
 
                     shop = new SqlConnection(connetionString);
                 }
@@ -136,7 +136,7 @@ namespace MictcoWebService.Common
                         .AddJsonFile("appsettings.json")
                         .Build();
 
-                    connetionString = configuration.GetConnectionString("ERPConnection");
+                    connetionString = SqlConnectionPool.Apply(configuration.GetConnectionString("ERPConnection"));
                     shop = new SqlConnection(connetionString);
                 }
             }
@@ -147,7 +147,7 @@ namespace MictcoWebService.Common
                     .AddJsonFile("appsettings.json")
                     .Build();
 
-                connetionString = configuration.GetConnectionString("ERPConnection");
+                connetionString = SqlConnectionPool.Apply(configuration.GetConnectionString("ERPConnection"));
                 shop = new SqlConnection(connetionString);
             }
 

@@ -27,7 +27,7 @@ namespace MictcoWebService.Controllers
         public TestConnectionController(IConfiguration configuration)
         {
             _configuration = configuration;
-            _connectionString = configuration.GetConnectionString("ConnStr");
+            _connectionString = SqlConnectionPool.Apply(configuration.GetConnectionString("ConnStr"));
         }
 
         [HttpPost("ecommerce-login")]

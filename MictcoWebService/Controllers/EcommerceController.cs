@@ -33,7 +33,7 @@ namespace MictcoWebService.Controllers
         public EcommerceController(IConfiguration configuration, IHubContext<EcommerceHub> hubContext)
         {
             _configuration = configuration;
-            _connectionString = configuration.GetConnectionString("ConnStr");
+            _connectionString = SqlConnectionPool.Apply(configuration.GetConnectionString("ConnStr"));
             _hubContext = hubContext;
         }
         [Authorize(Roles = UserRoles.EcommerceUser)]

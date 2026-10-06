@@ -27,7 +27,7 @@ namespace MictcoWebService.Common
 
         public ClientSqlServer()
         {
-            connetionString = @"Data Source=" + server + ";Initial Catalog=" + database + ";User ID=" + username + ";Password=" + password + "";
+            connetionString = SqlConnectionPool.Apply(@"Data Source=" + server + ";Initial Catalog=" + database + ";User ID=" + username + ";Password=" + password + "");
             shop = new SqlConnection(connetionString);
         }
         public  bool OpenConnection()
