@@ -14,3 +14,10 @@ Connection pooling is enabled for SQL Server. Each pool allows at most 50 connec
 - MictcoWebService/Controllers/EcommerceLoginController.cs
 - MictcoWebService/Controllers/TestConnectionController.cs
 - MictcoWebService/Controllers/TestController.cs
+
+## Connection release
+
+Repeated calls were leaving SQL connections checked out, so later requests waited the full 5-minute pool timeout. Connections are now returned to the pool when the request finishes. `get-tickets` also closes its connection as soon as the query completes.
+
+- MictcoWebService/Common/UserSqlServer.cs
+- MictcoWebService/Controllers/ServiceAppController.cs

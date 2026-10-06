@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
 using static System.Net.Mime.MediaTypeNames;
@@ -151,6 +152,8 @@ namespace MictcoWebService.Common
                 shop = new SqlConnection(connetionString);
             }
 
+            RegisterConnectionRelease();
+
             //if (validateUser)
             //{
             //    if (!IsUserValid())
@@ -163,6 +166,59 @@ namespace MictcoWebService.Common
         public string getConnectionString()
         {
             return connetionString;
+        }
+
+        /// <summary>
+        /// Returns the connection to the pool when the HTTP response finishes,
+        /// including when the action forgot to close it or failed with an exception.
+        /// </summary>
+        private void RegisterConnectionRelease()
+        {
+            var httpContext = controller?.HttpContext;
+            if (httpContext == null || shop == null)
+                return;
+
+            httpContext.Response.OnCompleted(() =>
+            {
+                ReleaseConnection();
+                return Task.CompletedTask;
+            });
+        }
+
+        public void ReleaseConnection()
+        {
+            var connection = shop;
+            if (connection == null)
+                return;
+
+            try
+            {
+                if (connection.State != ConnectionState.Closed)
+                    connection.Close();
+            }
+            catch (Exception ex)
+            {
+                lastError = ex.Message;
+            }
+        }
+
+        public async Task<bool> OpenConnectionAsync(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (shop.State == ConnectionState.Closed)
+                {
+                    shop.ConnectionString = connetionString;
+                    await shop.OpenAsync(cancellationToken);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                lastError = ex.Message;
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
         }
 
         public bool OpenConnection()
@@ -267,15 +323,7 @@ namespace MictcoWebService.Common
 
         public void close()
         {
-            try
-            {
-                if (shop != null)
-                    shop.Close();
-            }
-            catch (Exception ex)
-            {
-
-            }
+            ReleaseConnection();
         }
 
 

@@ -2495,13 +2495,28 @@ namespace MictcoWebService.Controllers
             try
             {
                 UserSqlServer usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                DataTable ticketTable;
+                DataTable lendTable;
+
+                try
+                {
+                if (!await usqlre.OpenConnectionAsync(HttpContext.RequestAborted))
+                {
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand(
                     "Sp_Service_Complaint_App",
                     usqlre.shop);
 
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandTimeout = 120;
 
                 cmd.Parameters.AddWithValue(
                     "@StatementType",
@@ -2554,18 +2569,20 @@ namespace MictcoWebService.Controllers
                         : DBNull.Value);
 
 
-                DataSet ds = new DataSet();
+                ticketTable = new DataTable();
+                lendTable = new DataTable();
 
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync(HttpContext.RequestAborted))
                 {
-                    da.Fill(ds);
+                    ticketTable.Load(reader);
+                    if (!reader.IsClosed)
+                        lendTable.Load(reader);
                 }
-
-
-                DataTable ticketTable = ds.Tables[0];
-                DataTable lendTable = ds.Tables.Count > 1
-                    ? ds.Tables[1]
-                    : new DataTable();
+                }
+                finally
+                {
+                    usqlre.ReleaseConnection();
+                }
 
 
                 // =====================================================
