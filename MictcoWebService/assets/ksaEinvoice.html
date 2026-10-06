@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>Bill</title>
+    <style>
+        body {
+            width: 100%;
+            margin-left: 20px;
+        }
+
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            outline: 0;
+            font-size: 100%;
+            vertical-align: baseline;
+            background: transparent;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        ​ @page {
+            size: A4;
+            margin: 0;
+        }
+
+        @media print {
+
+            html,
+            body {
+                width: 210mm;
+                height: 99%;
+            }
+
+            .header-wrap {
+                color: rgb(7, 146, 99);
+            }
+
+            .tbl-head {
+                background-color: rgb(168, 169, 170);
+            }
+        }
+
+        .container {
+            width: 98%;
+        }
+
+        .header-wrap {
+            display: flex;
+            justify-content: space-between;
+            color: rgb(7, 146, 99);
+        }
+
+        .header-wrap h1 {
+            /* line-height: 2; */
+            font-size: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 20px;
+        }
+
+        .head-data,
+        p {
+            font-weight: 600;
+            font-size: 14px;
+
+            /* line-height: 2; */
+        }
+
+        .head-right-data {
+            /* line-height: 2; */
+            font-size: 20px;
+        }
+
+        .header-tbl {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        .details-tbl {
+            display: flex;
+            width: 100%;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .customer-tbl {
+            width: 54%;
+        }
+
+        .payment-det-tbl {
+            width: 45%;
+        }
+
+        .customer-det {
+            border: 1px solid black;
+            border-radius: 20px;
+            height: 10rem;
+            padding-left: 10px;
+            padding-top: 10px;
+        }
+
+        .vat-det {
+            border: 1px solid black;
+            border-radius: 15px;
+            height: 1rem;
+            padding-left: 10px;
+            padding-top: 5px;
+        }
+
+        .main-tbl {
+            border: 1px solid black;
+            margin-top: 50px;
+            border-collapse: collapse;
+        }
+
+        .item-tbl,
+        .tbl-head,
+        .tbl-data {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 6px;
+        }
+
+        .tbl-head {
+            height: 3rem;
+            background-color: rgb(168, 169, 170);
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        .foot-total {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .amt-in-words {
+            border: 1px solid black;
+            border-radius: 6px;
+            height: 2rem;
+        }
+
+        .foot-amt {
+            width: 6rem;
+            border: 1px solid black;
+            border-radius: 5px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .date {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .invoice p {
+            line-height: 0;
+        }
+
+        .amt-in-arab {
+            font-weight: bold;
+        }
+
+        .foot-right-data,
+        p {
+            text-align: right;
+            padding-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class='container'>
+        <div class='header-wrap'>
+            <div>
+                <h1>{{com_name}}</h1>
+                <p class='head-data' style='text-align: center'>
+                    HAYY AL TALAL
+                </p>
+                <p style='text-align: center'> </p>
+            </div>
+            <div>
+                <h1 class='head-right-data'>
+                    مؤسسة فضيه شليويح مبارك الظفيري لتجارة الأغذية
+                </h1>
+                <p style='text-align: center'> HAYY AL TALAL : </p>
+                <p style='text-align: center'> </p>
+            </div>
+        </div>
+        <div>
+            <h2 class='header'>SIMPLIFIED TAX INVOICE - فاتورة ضريبية مبسطة</h2>
+        </div>
+        <div class='header-tbl'>
+            <div>
+                <table>
+                    <tr>
+                        <td style='font-weight: bold'>DATE</td>
+                        <td class='date'>:{{date}}</td>
+                        <td style='font-weight: bold; padding-left: 15px'>: تاریخ </td>
+                    </tr>
+                    <tr>
+                        <td style='font-weight: bold'>REP</td>
+                        <td style='font-weight: bold'>:{{salesman}}</td>
+                        <td style='font-weight: bold; padding-left: 15px'>: مندوب</td>
+                    </tr>
+                </table>
+            </div>
+            <div class='invoice'>
+                <p style='font-size: 1.2em'>
+                    INVOICE : {{jobNo}}
+                    <span style='margin-left: 5px'>: رقم الفاتورة</span>
+                </p>
+            </div>
+        </div>
+        <div class='details-tbl'>
+            <div class='customer-tbl'>
+                <table class='customer-det'>
+                    <tr>
+                        <th style='text-align: left'>CUSTOMER CODE</th>
+                        <td>:</td>
+                        <td>: كود العميل</td>
+                    </tr>
+                    <tr>
+                        <th style='text-align: left'>CUSTOMER NAME</th>
+                        <td>
+                            :
+                            <span style='font-weight: bold'>{{cName}}</span>
+                        </td>
+                        <td>: اسم الزبون</td>
+                    </tr>
+                    <tr>
+                        <th style='text-align: left'>ADDRESS</th>
+                        <td>:{{addr1}}</td>
+                        <td>: العنوان</td>
+                    </tr>
+                    <tr>
+                        <th style='text-align: left'>VAT#</th>
+                        <td>:{{vat}}</td>
+                        <td>: رقم الضريبي</td>
+                    </tr>
+                </table>
+            </div>
+            <div class='payment-det-tbl'>
+                <table class='vat-det'>
+                    <tr>
+                        <td>VAT-NO</td>
+                        <td>: {{com_gstin}}</td>
+                        <td>: رقم الضريبي</td>
+                    </tr>
+                </table>
+                <table style='height: 10rem'>
+                    <tr>
+                        <td style='padding-left: 10px'>P.O NO</td>
+                        <td>:</td>
+                        <td>: رقم الضريبي</td>
+                    </tr>
+                    <tr>
+                        <td style='padding-left: 10px'>PAYMENT MODE</td>
+                        <td>:</td>
+                        <td>:نوع البيع</td>
+                    </tr>
+                    <tr>
+                        <td style='padding-left: 10px'>DELIVERY NOTE</td>
+                        <td>:</td>
+                        <td>:سند <br />الاستلام</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class='main-tbl'>
+            <table class='item-tbl' style='width: 100%'>
+                <tr>
+                    <th class='tbl-head'>#</th>
+                    <th class='tbl-head' style='text-align: left'>
+                        البيان<br />Item Name
+                    </th>
+                    <th class='tbl-head'>الكمية<br />QTY</th>
+                    <th class='tbl-head'>سعر الوحدة<br />Unit Price</th>
+                    <th class='tbl-head'>جمالي بدون ضريبة<br />Total without VAT</th>
+                    <th class='tbl-head'>الضريبة<br />VAT</th>
+                    <th class='tbl-head'>الضريبة<br />Total with VAT</th>
+                </tr>
+                {{items}}
+            </table>
+        </div>
+        <div style='display:flex' ;>
+            {{qr}}
+           <table style=' margin-top: 20px'>
+                <tr>
+                    <td rowspan='3'></td>
+                    <td>
+                        <div class='foot-total'>
+                            <p>TOTAL IN WORDS</p>
+                            <p>المجموع في الكلمات</p>
+                        </div>
+                    </td>
+                    <td style='line-height: 1.8'>
+                        <p>المبلغ الإجمالي</p>
+                        <p>GROSS AMOUNT</p>
+                    </td>
+                    <td class='foot-amt'>{{si_gross_value}}<b> ريال </b></td>
+                </tr>
+                <tr>
+                    <td style='line-height: 1.8'>
+                        <div class='amt-in-words'>
+                            <p style='text-align: center'>
+                                {{amtInWord}}
+                            </p>
+                        </div>
+                    </td>
+                    <td class='foot-right-data' style='line-height: 1.8'>
+                        <p>ضريبة القيمة المضافة</p>
+                        <p>VAT AMOUNT</p>
+                    </td>
+                    <td class='foot-amt'>{{si_tax}} <b> ريال </b></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style='line-height: 1.8'>
+                        <p>المجموع الكلي</p>
+                        <p>GRAND TOTAL</p>
+                    </td>
+                    <td class='foot-amt'>{{si_total}}<b>ريال </b></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

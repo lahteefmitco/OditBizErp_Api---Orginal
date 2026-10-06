@@ -1,0 +1,401 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Media</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;1,500&display=swap"
+        rel="stylesheet">
+</head>
+<style>
+    .wrapper {
+        /* padding: 0 30px;
+        padding-top: 15px; */
+        padding: 4mm;
+        display: flex;
+        justify-content: center;
+    }
+
+    .heading-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        /* position: fixed;
+        top: 0mm;
+        width: 100%;
+        height: 200px; */
+        /* width: 423.3px; */
+        width: 478.3px;
+    }
+
+    .headers {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        font-weight: bold;
+    }
+
+    .headers span {
+        line-height: 1.3rem;
+        font-size: 13px;
+    }
+
+    .details-head {
+        color: #fff;
+        border-collapse: collapse;
+        font-size: 22px;
+        padding: 0 30px;
+        /* font-weight: 600; */
+    }
+
+    .table-cls {
+        border: 1px solid;
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .customer-details {
+        height: 130px;
+        /* min-height: 130px; */
+        padding: 100px;
+        /* margin-top: 100px; */
+    }
+
+    .cust-details {
+        color: #fff;
+        font-size: 12px;
+        padding: 0 30px;
+    }
+
+    .cust-name {
+        /* padding: 10px 0; */
+        padding: 0 30px;
+    }
+
+    .device-details-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .table-font {
+        font-size: 12px;
+    }
+
+    .device-details tr td {
+        border: 1px solid;
+        text-align: center;
+        padding: 5px;
+    }
+
+    .rightSide-data {
+        padding: 0 30px;
+        font-size: 12px;
+    }
+
+    .left-head {
+        font-size: 12px;
+    }
+
+    .complaints-section tr td {
+        border: 1px solid;
+        padding: 5px;
+        text-align: center;
+        width: 100%;
+        page-break-inside: auto;
+    }
+
+    .footer-data tr td {
+        border: 1px solid;
+        padding: 5px;
+        text-align: center;
+        font-size: 12px;
+    }
+
+    .footer-data {
+        border: 2px solid #192a53;
+    }
+
+    /* dddddd */
+    .cus-table {
+        border: 2px solid #192a53;
+        /* padding: 10px; */
+        margin-bottom: 10px;
+        /* max-width: 423.3px; */
+        min-width: 423.3px;
+        overflow: hidden;
+        page-break-inside: auto
+    }
+
+    .cus-thead {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        width: 100%;
+        border-bottom: 1px solid;
+        page-break-inside: avoid;
+        page-break-after: auto
+    }
+
+    .cus-th:last-child {
+        border-right: 0;
+    }
+
+    .cus-th {
+        padding: 10px 5px;
+        font-weight: bold;
+        border-right: 1px solid;
+        text-align: center;
+        font-size: 12px;
+    }
+
+    @media print {
+        .cus-body-tr {
+            page-break-inside: avoid;
+        }
+
+        .cus-td {
+            page-break-inside: avoid;
+        }
+    }
+
+    .cus-body-tr {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        width: 100%;
+        border-bottom: 1px solid;
+        page-break-inside: avoid;
+        /* page-break-after:auto;
+        page-break-after: avoid; */
+    }
+
+    .cus-body-tr:last-child {
+        border-bottom: 0;
+    }
+.cus-body-tr-dummy {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      width: 100%;
+      page-break-inside: avoid;
+    }
+    .cus-td {
+        padding: 10px 5px;
+        border-right: 1px solid;
+        text-align: center;
+        overflow-wrap: break-word;
+        page-break-inside: avoid;
+        font-size: 12px;
+    }
+
+    .cus-td:last-child {
+        border-right: 0;
+    }
+ .cus-td-dummy {
+      padding: 10px 5px;
+      border-right: 1px solid;
+      text-align: center;
+      overflow-wrap: break-word;
+      page-break-inside: avoid;
+      font-size: 12px;
+    }
+    /* Styles go here */
+    .page-header,
+    .page-header-space {
+        height: 100px;
+    }
+
+    .page-header {
+        position: fixed;
+        top: 7mm;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .page-footer-space {
+        height: 0px;
+
+    }
+
+    .page {
+        page-break-after: always;
+    }
+
+    /* 
+    @page {
+        margin: 20mm
+    } */
+
+    @media print {
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-footer-group;
+        }
+
+        button {
+            display: none;
+        }
+
+        /* body {
+        margin: 0;
+      } */
+    }
+</style>
+
+<body class="wrapper">
+    <div class="page-header">
+        <div class="heading-container">
+            <div class="headers">
+                <span>{{com_name}}</span>
+                <span>{{com_add1}}</span>
+                <span>{{com_add2}}</span>
+                <span>{{com_add3}}</span>
+                <span>GSM:{{com_telephone}}</span>
+                <span>GSM:{{com_mob}}</span>
+            </div>
+            <div class="headers" style="text-align: right;">
+                <span>{{com_ar_name}}</span>
+                <span>{{com_ar_add1}}:س.ت</span>
+                <span>ص.ب: {{com_ar_add2}}</span>
+                <span>{{com_ar_add3}}</span>
+                <span>{{com_ar_telephone}}:يقال</span>
+                <span>{{com_ar_mob}}:يقال</span>
+            </div>
+        </div>
+
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <td>
+                    <!--place holder for the fixed-position header-->
+                    <div class="page-header-space"></div>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <table class="customer-details table-cls">
+                        <colgroup>
+                            <col span="2" style="background-color: #051333;">
+                        </colgroup>
+                        <tr>
+                            <td colspan="2" class="details-head">Customer Details</td>
+                            <td class="rightSide-data">
+                                Date <br />
+                                {{date}}
+                            </td>
+                            <td class="left-head">
+                                VAT NO. <br />
+                                {{vat}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cust-details">
+                                Name <br />
+                                <span style="font-weight: bold;">{{cName}}</span>
+                            </td>
+                            <td class="cust-details">
+                                GSM
+                                <br />
+                                <span style="font-weight: bold;">{{cPhone}}</span>
+                            </td>
+                            <td class="rightSide-data">
+                                Time
+                                <br />
+                                {{time}}
+                            </td>
+                            <td>
+                                <span class="left-head"> job No</span> <br />
+                                {{jobNo}}
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- device Details -->
+                    <div class="device-details-container">
+                        <table class="device-details table-cls">
+                            <tr>
+                                <td class="table-font">Brand</td>
+                                <td class="table-font">{{brand}}</td>
+                            </tr>
+                            <tr>
+                                <td class="table-font">Model No</td>
+                                <td class="table-font">{{model}}</td>
+                            </tr>
+                            <tr>
+                                <td class="table-font">IMEI</td>
+                                <td class="table-font">{{imei}}</td>
+                            </tr>
+
+                        </table>
+                        <table class="device-details table-cls">
+                            <tr>
+                                <td class="table-font">Colour</td>
+                                <td style="min-width: 30%;" class="table-font">{{color}}</td>
+                            </tr>
+                            <tr>
+                                <td class="table-font">Service Type</td>
+                                <td class="table-font">{{serviceType}}</td>
+                            </tr>
+                            <tr>
+                                <td class="table-font">Receiving Condition</td>
+                                <td class="table-font">{{receivingCondition}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!-- Complaint Section -->
+
+                    <div class="cus-table ">
+                        <div class="cus-thead">
+                            <div style="width: 42px" class="cus-th">No.</div>
+                            <div style="width: 105px" class="cus-th">Complaints</div>   
+                            <div style="width: 127px" class="cus-th">Remarks</div>
+                            <div style="width: 84.66px" class="cus-th">Instruction</div>
+                            <div style="width: 63px" class="cus-th">Amount</div>
+                        </div>
+                        {{complaints}}
+                    </div>
+                    <!-- Footer -->
+
+                    <table class="footer-data table-cls">
+                        <tr>
+                            <td colspan="2">Remark</td>
+                            <td colspan="2">{{remark}}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Cost R.O</td>
+                            <td style="font-weight: bold; font-size: 19px;">{{cost}}</td>
+                            <td>Approximate Delivery Date</td>
+                            <td>{{dDate}} <br />{{dTime}}</td>
+
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>
+                    <!--place holder for the fixed-position footer-->
+                    <div class="page-footer-space"></div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+</body>
+
+</html>

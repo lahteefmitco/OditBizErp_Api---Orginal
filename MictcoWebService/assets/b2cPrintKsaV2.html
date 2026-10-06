@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Media</title>
+</head>
+
+<body>
+  <img src="https://iili.io/HYzwqaR.jpg" alt="" class="header-img">
+  <table class="inv-head">
+    <tr>
+      <td class="inv-head-first">Invoice No:</td>
+      <td colspan="2" class="inv-head-first">{{EntryNo}}</td>
+      <td colspan="2" class="inv-head-first">{{date}}</td>
+      <td class="inv-head-first">Date/تاريخ</td>
+    </tr>
+    <tr>
+      <td>Customer</td>
+      <td>{{cName}}</td>
+      <td class="inv-head-second text-right">اسم العميل</td>
+      <td>Time</td>
+      <td>{{time}}</td>
+      <td>زمن</td>
+    </tr>
+    <tr>
+      <td>Address</td>
+      <td colspan="2" class="inv-head-second">{{add1}}</td>
+      <td>Mobile</td>
+      <td>{{mob}}</td>
+      <td>رقم جوال</td>
+    </tr>
+    <tr class="inv-head-third">
+      <td>VAT No</td>
+      <td>{{vat}}</td>
+      <td class="inv-head-second text-right">رقم الضريبي</td>
+      <td>Pay Mode</td>
+      <td></td>
+      <td>طريقة الدفع</td>
+    </tr>
+  </table>
+  <table>
+    <thead>
+      <tr class="item-th">
+        <th class="text-center">رقم<br />No</th>
+        <th class="text-center">البيان<br />Description</th>
+        <th class="text-center">العدد<br />Qty</th>
+        <th class="text-center">الوحدة<br />Unit</th>
+        <th class="text-center">السعر الدفرادي<br />Unit Price</th>
+        <th class="text-center">الضريبة<br />VAT</th>
+        <th class="text-center">الريال الضريبة<br />VAT Amt</th>
+        <th class="text-center">الإجمالي<br />Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{items}}
+    </tbody>
+  </table>
+  <table>
+    <tr>
+      <td colspan="4"></td>
+      <td rowspan="4">
+        {{qr}}
+      </td>
+      <td class="text-right item-bg">
+        <span>Total</span>/
+        <span>الإجمالي</span>
+      </td>
+      <td class="text-right item-bg">{{si_gross_value}}</td>
+    </tr>
+    <tr>
+      <td colspan="4"></td>
+      <td class="text-right item-bg">
+        <span>VAT</span>/
+        <span>الضريبة</span>
+      </td>
+      <td class="text-right item-bg">{{si_tax}}</td>
+    </tr>
+    <tr>
+      <td colspan="4"></td>
+      <td class="text-right item-bg">
+        <span>Discount</span>/<span>الخصم</span>
+      </td>
+      <td class="text-right item-bg">{{si_disc}}</td>
+    </tr>
+    <tr>
+      <td colspan="3" class="text-right">البائع</br>Salesman</td>
+      <td class="text-right">المستلم</br>received by</td>
+      <td class="text-right item-bg">
+        <span>Grand Total</span>/<span>المبلغ الإجمالي</span>
+      </td>
+      <td class="text-right item-bg">{{si_total}}</td>
+    </tr>
+    <tr>
+      <td colspan="3"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td colspan="3"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="text-center footer" colspan="8">
+        Riyadh Dar Al Baida - Factory District الرياض - الدار البيضاء - حي المصانع
+      </td>
+    </tr>
+
+  </table>
+</body>
+<style>
+  * {
+    padding: 0;
+    margin: 0;
+  }
+
+  @page {
+    size: A4;
+    margin: 4mm;
+  }
+
+  @media print {
+
+    html,
+    body {
+      width: 210mm;
+      height: 99%;
+    }
+  }
+
+  .header-img {
+    width: 100%;
+    height: 160px
+  }
+
+  .text-right {
+    text-align: right;
+  }
+
+  .text-left {
+    text-align: left;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .footer {
+    background-color: #bf3f19;
+    color: #fff;
+    border: 2px solid #e97a08;
+    border-width: 4px 0 0 0;
+  }
+
+  .inv-head {
+    background-color: #fdeef1;
+  }
+
+  td {
+    padding: 4px;
+  }
+
+  .inv-head-first {
+    border-bottom: 4px solid #fff;
+  }
+
+  .inv-head-second {
+    border-right: 4px solid #fff;
+  }
+
+  .inv-head-third {
+    border-bottom: 4px solid #fff;
+  }
+
+  .item-th {
+    background-color: #e97a08;
+    color: #fff;
+  }
+
+  .item-th th {
+    padding: 5px 0;
+    border: 2px solid #fff;
+    border-top: 0;
+    border-left: 0;
+  }
+  .item-th td:last-child {
+    border-right: 0;
+  }
+  .item-bg {
+    background-color: #fdeef1;
+    border: 2px solid #fff;
+  }
+
+  .item td {
+    background-color: #fdeef1;
+    border: 2px solid #fff;
+    border-top: 0;
+    border-left: 0;
+  }
+  .item td:last-child {
+    border-right: 0;
+  }
+</style>
+
+</html>

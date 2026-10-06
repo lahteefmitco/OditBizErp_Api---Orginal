@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Media</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- Heading -->
+        <div class="heading-container">
+            <div class="headers">
+                <span>{{com_name}}</span>
+                <span>{{com_add1}}</span>
+                <span>{{com_add2}}</span>
+                <span>{{com_add3}}</span>
+                <span>GSM : {{com_telephone}}</span>
+                <span>GSM : {{com_mob}}</span>
+            </div>
+            <div class="headers">
+                <span>{{com_ar_name}}</span>
+                <span>{{com_ar_add1}}</span>
+                <span>{{com_ar_add2}}</span>
+                <span>{{com_ar_add3}}</span>
+                <span>GSM : {{com_ar_telephone}}</span>
+                <span>GSM : {{com_ar_mob}}</span>
+            </div>
+        </div>
+        <!-- CustomerDetails -->
+        <table class="customer-details">
+            <colgroup>
+                <col span="2" style="background-color: #111;">
+            </colgroup>
+            <tr>
+                <td colspan="2" class="details-head">Customer Details</td>
+                <td class="rightSide-data">Date <br />
+                    {{date}}
+                </td>
+                <td>VAT NO. <br />
+                    {{vat}}
+                </td>
+            </tr>
+            <tr>
+                <td class="cust-details">Name <br />
+                    {{cName}}
+                </td>
+                <td class="cust-details">GSM
+                    <br />
+                    {{cPhone}}
+                </td>
+                <td class="rightSide-data">Time
+                    <br />
+                    {{time}}
+                </td>
+                <td>job No <br />
+                    {{jobNo}}
+                </td>
+            </tr>
+        </table>
+        <!-- device Details -->
+        <div class="device-details-container">
+            <table class="device-details">
+                <tr>
+                    <td>Brand</td>
+                    <td>{{brand}}</td>
+                </tr>
+                <tr>
+                    <td>Model No</td>
+                    <td>{{model}}</td>
+                </tr>
+                <tr>
+                    <td>IMEI</td>
+                    <td>{{imei}}</td>
+                </tr>
+                <tr>
+                    <td>Colour</td>
+                    <td>{{color}}</td>
+                </tr>
+            </table>
+            <table class="device-details">
+                <tr>
+                    <td>Service Type</td>
+                    <td>{{serviceType}}</td>
+                </tr>
+                <tr>
+                    <td>Receiving Condition</td>
+                    <td>{{receivingCondition}}</td>
+                </tr>               
+            </table>
+        </div>
+        <!-- Complaint Section -->
+        <table class="complaints-section">
+            <tr>
+                <td>No.</td>
+                <td>Complaints</td>
+                <td>Remarks</td>
+                <td>Instruction</td>
+                <td>Amount</td>
+            </tr>
+          {{complaints}}
+
+        </table>
+        <!-- Footer -->
+        <div class="{{footerPageBreak}}"></div>
+        <table class="footer-data">
+            <tr>
+                <td colspan="2">Remark</td>
+                <td colspan="2">{{remark}}</td>
+            </tr>
+           
+            <tr>
+                <td>Cost R.O</td>
+                <td>{{cost}}</td>
+                <td>Approximate Delivery Date</td>
+                <td>{{dDate}} <br />{{dTime}}</td>
+
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        font-size: 14px;
+    }
+
+    body {
+        /* margin: 5mm; */
+    }
+
+    @page {
+        /*size: 7in 9.25in;*/
+        size: A5;
+        /* margin: 27mm 16mm 27mm 16mm;*/
+    }
+
+    @print {
+        margin: 2mm;
+    }
+
+    .wrapper {
+        padding: 0 30px;
+        padding-top: 15px;
+    }
+
+    .heading-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .headers {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .details-head {
+        color: #fff;
+        border-collapse: collapse;
+        font-size: 30px;
+        padding: 0 30px;
+        font-weight: 600;
+    }
+
+    table {
+        border: 1px solid;
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .customer-details {
+        height: 130px;
+        /* min-height: 130px; */
+        padding: 100px;
+    }
+
+    .cust-details {
+        color: #fff;
+        padding: 0 30px;
+    }
+
+    .cust-name {
+        /* padding: 10px 0; */
+        padding: 0 30px;
+
+    }
+
+    .device-details-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .device-details tr td {
+        border: 1px solid;
+        text-align: center;
+        padding: 5px;
+    }
+
+    .rightSide-data {
+        padding: 0 30px;
+    }
+
+    .complaints-section tr td {
+        border: 1px solid;
+        padding: 5px;
+        text-align: center;
+    }
+
+    .footer-data tr td {
+        border: 1px solid;
+        padding: 5px;
+        text-align: center;
+    }
+</style>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Media invoice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;1,500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- Heading -->
+        <div class="heading-container">
+            <div class="headers">
+                <span>{{com_name}}</span>
+                <span>{{com_add1}}</span>
+                <span>{{com_add2}}</span>
+                <span>{{com_add3}}</span>
+                <span>GSM : {{com_telephone}}</span>
+                <span>GSM : {{com_mob}}</span>
+            </div>
+            <div class="headers" style="text-align: right;">
+                <span>{{com_ar_name}}</span>
+                <span>{{com_ar_add1}}:س.ت</span>
+                <span>ص.ب: {{com_ar_add2}}</span>
+                <span>{{com_ar_add3}}</span>
+                <span>{{com_ar_telephone}}:يقال</span>
+                <span>{{com_ar_mob}}:يقال</span>
+            </div>
+        </div>
+        <!-- Invoice -->
+        <table class="invoice-tbl">
+            <colgroup>
+                <col span="2" style="background-color: #111;">
+            </colgroup>
+            <tr>
+                <td class="invoice-head invoice">INVOICE</td>
+                <td class="invoice-head">InvoiceNo <br /> {{jobNo}}</td>
+                <td class="date">Date <br /> {{date}}</td>
+                <td>VAT No<br /> {{vat}}</td>
+            </tr>
+        </table>
+        <!-- invoice to -->
+        <table class="invoice-to">
+            <tr>
+                <td>Invoice To</td>
+                <td style="font-weight: bold;">{{cName}}</td>
+            </tr>
+            <tr>
+                <td>LOYALITY</td>
+                <td>0</td>
+            </tr>
+        </table>
+        <!-- table -->
+        <div class="tbl-container" >
+            <table class="item-tbl">
+                <tr>
+                    <td class="tbl-head">No</td>
+                    <td class="tbl-head">Description Of Goods</td>
+                    <td class="tbl-head">Warenty</td>
+                    <td class="tbl-head">Qty</td>
+                    <td class="tbl-head">Price</td>
+                    <td class="tbl-head">Total Amount</td>
+                </tr>               
+               {{items}}                
+            </table>
+            <table class="footet-tbl">
+                <tr>
+                    <td class="footer-tbl-data">Amount Include VAT</td>
+                    <td class="total-amt"> {{si_gross_value}}</td>
+                </tr>
+                <tr>
+                    <td class="footer-tbl-data">Discount</td>
+                    <td class="total-amt"> {{si_disc}}</td>
+                </tr>
+                <tr>
+                    <td class="footer-tbl-data">Amount Exclude VAT</td>
+                    <td class="total-amt"> {{si_net}}</td>
+                </tr>
+                <tr>
+                    <td class="footer-tbl-data"> VAT @5%</td>
+                    <td class="total-amt"> {{si_tax}}</td>
+                </tr>
+                <tr>
+                    <td class="total footer-tbl-data">Total Amount</td>
+                    <td class="total total-amt"> {{si_total}}</td>
+                </tr>
+            </table>
+            <div class="footer">
+                <p class="sign">Authorised Signatory & Name</p>
+                <p class="remarks">Remarks</p>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        font-size: 15px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        /* margin: 2mm; */
+    }
+
+    @page {
+        /*size: 7in 9.25in;*/
+        /* size: A5; */
+        /* margin: 27mm 16mm 27mm 16mm;*/
+    }
+
+    @print {
+        /* margin: 2mm; */
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .wrapper {
+        padding: 0 20px;
+    }
+
+    .heading-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .heading-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .headers {
+        display: flex;
+        flex-direction: column;
+        font-weight: bold;
+    }
+
+    .invoice-tbl {
+        height: 50px;
+        margin-bottom: 10px;
+    }
+
+    .invoice-tbl tr {
+        border: 1px solid;
+        border-right: 0;
+        border-left: 0;
+    }
+
+    .invoice {
+        font-size: 18px;
+        font-weight: 600;
+        padding: 0 10px;
+    }
+
+    .date {
+        padding: 0 10px;
+    }
+
+    .invoice-head {
+        color: #fff;
+    }
+
+    .invoice-to {
+        width: 50%;
+        border: 0 !important;
+    }
+
+    .item-tbl tr td {
+        border: 1px solid;
+        border-left: 0;
+        padding: 7px;
+        
+    }
+    .item-tbl tr td:last-child {
+        border-right: 0 !important;
+    }
+
+    .item-tbl {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+
+    .total {
+        /* font-size: 18px; */
+        font-weight: 600;
+        padding: 7px;
+    }
+
+    .tbl-head {
+        font-size: 16px;
+    }
+
+    .tbl-data {
+        font-size: 8px;
+    }
+
+    .footet-tbl tr td {
+        border: 1px solid;
+        border-top: 0;
+    }
+    .footet-tbl tr td:last-child {
+        border-right: 0;
+    }
+
+    .footet-tbl {
+        display: flex;
+        justify-content: right;
+        width: 100%;
+    }
+
+    .footer-tbl-data {
+        padding: 7px 0;
+    }
+
+    .total-amt {
+        padding: 0 39px;
+    }
+
+    .footer {
+        display: flex;
+        margin-top: 30px;
+        margin: 10px;
+    }
+
+    /* .sign{
+        padding: 0 30px;
+    } */
+    .remarks {
+        padding: 0 30px;
+    }
+    .tbl-container{
+        border: 1px solid;
+        border-top: 0;
+    }
+</style>
