@@ -2436,12 +2436,12 @@ FROM inv_sales_inf s
 LEFT JOIN acc_subhead t ON t.as_id = s.si_assign_to
 LEFT JOIN inv_service_complaint_reg c ON c.scr_id = s.si_coupon_no
 LEFT JOIN inv_color clr ON clr.clr_id = s.si_color
-LEFT JOIN (
-    SELECT ssh_ticket_id, MAX(ssh_changed_date) AS AssignedDate
-    FROM inv_service_status_history
-    WHERE ssh_status IN (N'Assigned', N'Relocate')
-    GROUP BY ssh_ticket_id
-) ass ON ass.ssh_ticket_id = s.si_entryno
+OUTER APPLY (
+    SELECT MAX(h.ssh_changed_date) AS AssignedDate
+    FROM inv_service_status_history h
+    WHERE h.ssh_ticket_id = s.si_entryno
+      AND h.ssh_status IN (N'Assigned', N'Relocate')
+) ass
 WHERE s.si_str_id = 12
   AND ISNULL(s.si_coupon_no, 0) <> 0
   AND (
