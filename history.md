@@ -264,3 +264,16 @@ INCLUDE (vbrp_billno, vbrp_form, vbrp_bill_amount, vbrp_amount, vbrp_balance);
 | 12e `acc_account_transactions` | insert-delivery, update-delivery | Medium — SUM on large ledger table |
 | 12f `inv_verify_billwise_reciept_inf` | collection report | Medium — date range scan |
 | 12g `inv_verify_billwise_reciept_pur` | collection report, approve | Low — usually small result set |
+
+## 13. IsUserValid cache — load test fix
+
+Load test: 10,000 sequential `get-tickets?status=Assigned` requests. 7,242 failed (72%). Errors: "User is not authorized" and "unknown".
+
+**Root cause:** `IsUserValid()` opened a separate SQL connection on every request to check `gnl_users.gu_active`. Under rapid fire, SQL Server connection pool was saturated. When `conn.Open()` failed (pool timeout), the `catch` returned `false`, and the constructor threw `UnauthorizedAccessException("User is not authorized.")` — masking the real problem (connection exhaustion) as an auth error.
+
+**Fix:**
+- Added `ConcurrentDictionary` cache keyed on `connectionString|userId`. Cached results expire after 5 minutes. Subsequent requests skip the SQL round-trip entirely.
+- `IsUserValid` no longer catches connection failures silently. It now throws `InvalidOperationException` with the real database error message, so callers get "database error" instead of "not authorized."
+- Connection errors are NOT cached, so the next request retries normally.
+
+File: `MictcoWebService/Common/UserSqlServer.cs`

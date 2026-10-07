@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Collections.Concurrent;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Threading;
@@ -46,6 +47,16 @@ namespace MictcoWebService.Common
         public SqlConnection shop;
         public SqlDataAdapter da;
         static bool _passValidateTableEnsured;
+
+        /// <summary>
+        /// Caches IsUserValid results per (connectionString + userId) for 5 minutes.
+        /// Without this cache, every request opens a separate SQL connection just
+        /// for the user-active check, which exhausts the pool under load and
+        /// masks connection failures as "User is not authorized."
+        /// </summary>
+        private static readonly ConcurrentDictionary<string, (bool valid, DateTime expiresUtc)>
+            _userValidCache = new ConcurrentDictionary<string, (bool, DateTime)>();
+        private const int UserValidCacheMinutes = 5;
 
         ControllerBase controller;
         //public UserSqlServer(ControllerBase controller, bool validateUser = true)
@@ -161,6 +172,8 @@ namespace MictcoWebService.Common
 
             if (validateUser && int.TryParse(this.userId, out var parsedUserId) && parsedUserId > 0)
             {
+                // IsUserValid throws InvalidOperationException on DB errors
+                // so callers see the real problem instead of "not authorized".
                 if (!IsUserValid())
                     throw new UnauthorizedAccessException("User is not authorized.");
             }
@@ -2788,13 +2801,23 @@ namespace MictcoWebService.Common
         //}
         public bool IsUserValid()
         {
+            if (!int.TryParse(userId, out var uid) || uid <= 0)
+                return false;
+            if (string.IsNullOrWhiteSpace(connetionString))
+                return false;
+
+            // Cache key: connection + user so different databases / users
+            // don't share cached results.
+            string cacheKey = connetionString + "|" + uid;
+
+            if (_userValidCache.TryGetValue(cacheKey, out var cached)
+                && cached.expiresUtc > DateTime.UtcNow)
+            {
+                return cached.valid;
+            }
+
             try
             {
-                if (!int.TryParse(userId, out var uid) || uid <= 0)
-                    return false;
-                if (string.IsNullOrWhiteSpace(connetionString))
-                    return false;
-
                 // Own connection so this check does not use the shared shop connection,
                 // which may already be closed or waiting on the pool.
                 using var conn = new SqlConnection(connetionString);
@@ -2811,10 +2834,16 @@ namespace MictcoWebService.Common
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())
+                        {
+                            _userValidCache[cacheKey] = (false, DateTime.UtcNow.AddMinutes(UserValidCacheMinutes));
                             return false;
+                        }
 
                         if (Convert.ToInt32(reader["gu_active"]) != 1)
+                        {
+                            _userValidCache[cacheKey] = (false, DateTime.UtcNow.AddMinutes(UserValidCacheMinutes));
                             return false;
+                        }
 
                         guPass = reader["gu_pass"] == DBNull.Value
                             ? ""
@@ -2822,20 +2851,33 @@ namespace MictcoWebService.Common
                     }
                 }
 
+                bool result;
                 if (!IsPassValidateUser(conn, uid))
-                    return true;
+                {
+                    result = true;
+                }
+                else if (string.IsNullOrEmpty(tokenPassHash))
+                {
+                    result = false;
+                }
+                else
+                {
+                    string tokenPass = CommonHelper.tokenDecrypt(tokenPassHash);
+                    result = string.Equals(tokenPass, guPass ?? "", StringComparison.OrdinalIgnoreCase);
+                }
 
-                if (string.IsNullOrEmpty(tokenPassHash))
-                    return false;
-
-                string tokenPass = CommonHelper.tokenDecrypt(tokenPassHash);
-                return string.Equals(tokenPass, guPass ?? "", StringComparison.OrdinalIgnoreCase);
+                _userValidCache[cacheKey] = (result, DateTime.UtcNow.AddMinutes(UserValidCacheMinutes));
+                return result;
             }
             catch (Exception ex)
             {
                 lastError = ex.Message;
                 Console.WriteLine("IsUserValid ERROR: " + ex.ToString());
-                return false;
+                // Don't cache connection failures — let the next request retry.
+                // Rethrow as InvalidOperationException so the caller can distinguish
+                // a real auth failure from a database error.
+                throw new InvalidOperationException(
+                    "User validation failed due to a database error: " + ex.Message, ex);
             }
         }
 
