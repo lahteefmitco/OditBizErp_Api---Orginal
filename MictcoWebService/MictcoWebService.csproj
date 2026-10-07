@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <RollForward>LatestMajor</RollForward>
   </PropertyGroup>
   <PropertyGroup>
     <RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
