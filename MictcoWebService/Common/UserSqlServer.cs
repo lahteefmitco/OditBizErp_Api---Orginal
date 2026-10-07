@@ -57,15 +57,6 @@ namespace MictcoWebService.Common
         private static readonly ConcurrentDictionary<string, (bool valid, DateTime expiresUtc)>
             _userValidCache = new ConcurrentDictionary<string, (bool, DateTime)>();
 
-        /// <summary>
-        /// One lock per cache key. When 100 requests arrive simultaneously
-        /// with the same token, only 1 opens a SQL connection for the check.
-        /// The other 99 wait on the lock, then read the cached result.
-        /// Without this, all 100 call conn.Open() synchronously and starve the thread pool.
-        /// </summary>
-        private static readonly ConcurrentDictionary<string, object>
-            _userValidLocks = new ConcurrentDictionary<string, object>();
-
         private const int UserValidCacheMinutes = 5;
 
         ControllerBase controller;
@@ -2820,85 +2811,74 @@ namespace MictcoWebService.Common
             // don't share cached results.
             string cacheKey = connetionString + "|" + uid;
 
-            // Fast path: cache hit — no lock, no SQL, no thread blocking.
+            // Fast path: cache hit — pure in-memory, no blocking.
             if (_userValidCache.TryGetValue(cacheKey, out var cached)
                 && cached.expiresUtc > DateTime.UtcNow)
             {
                 return cached.valid;
             }
 
-            // Slow path: only ONE thread per cache key opens a SQL connection.
-            // All other threads with the same key wait on this lock, then
-            // read the cache — never touching the database.
-            var keyLock = _userValidLocks.GetOrAdd(cacheKey, _ => new object());
-            lock (keyLock)
+            // Slow path: cache miss. A few concurrent threads may hit the DB
+            // simultaneously on the very first request — that's fine.
+            // conn.Open() takes ~30ms and SetMinThreads(200) ensures enough
+            // threads. Using a lock here would block 99 threads and deadlock IIS.
+            try
             {
-                // Double-check: another thread may have populated the cache
-                // while we waited for the lock.
-                if (_userValidCache.TryGetValue(cacheKey, out cached)
-                    && cached.expiresUtc > DateTime.UtcNow)
-                {
-                    return cached.valid;
-                }
+                using var conn = new SqlConnection(connetionString);
+                conn.Open();
 
-                try
+                string guPass = null;
+                using (var cmd = new SqlCommand(
+                    "SELECT TOP 1 gu_active, gu_pass FROM gnl_users WHERE gu_user_id = @uid",
+                    conn))
                 {
-                    using var conn = new SqlConnection(connetionString);
-                    conn.Open();
+                    cmd.CommandTimeout = 10;
+                    cmd.Parameters.Add("@uid", SqlDbType.Int).Value = uid;
 
-                    string guPass = null;
-                    using (var cmd = new SqlCommand(
-                        "SELECT TOP 1 gu_active, gu_pass FROM gnl_users WHERE gu_user_id = @uid",
-                        conn))
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        cmd.CommandTimeout = 30;
-                        cmd.Parameters.Add("@uid", SqlDbType.Int).Value = uid;
-
-                        using (var reader = cmd.ExecuteReader())
+                        if (!reader.Read())
                         {
-                            if (!reader.Read())
-                            {
-                                _userValidCache[cacheKey] = (false, DateTime.UtcNow.AddMinutes(UserValidCacheMinutes));
-                                return false;
-                            }
-
-                            if (Convert.ToInt32(reader["gu_active"]) != 1)
-                            {
-                                _userValidCache[cacheKey] = (false, DateTime.UtcNow.AddMinutes(UserValidCacheMinutes));
-                                return false;
-                            }
-
-                            guPass = reader["gu_pass"] == DBNull.Value
-                                ? ""
-                                : reader["gu_pass"].ToString();
+                            _userValidCache[cacheKey] = (false, DateTime.UtcNow.AddMinutes(UserValidCacheMinutes));
+                            return false;
                         }
-                    }
 
-                    bool result;
-                    if (!IsPassValidateUser(conn, uid))
-                    {
-                        result = true;
-                    }
-                    else if (string.IsNullOrEmpty(tokenPassHash))
-                    {
-                        result = false;
-                    }
-                    else
-                    {
-                        string tokenPass = CommonHelper.tokenDecrypt(tokenPassHash);
-                        result = string.Equals(tokenPass, guPass ?? "", StringComparison.OrdinalIgnoreCase);
-                    }
+                        if (Convert.ToInt32(reader["gu_active"]) != 1)
+                        {
+                            _userValidCache[cacheKey] = (false, DateTime.UtcNow.AddMinutes(UserValidCacheMinutes));
+                            return false;
+                        }
 
-                    _userValidCache[cacheKey] = (result, DateTime.UtcNow.AddMinutes(UserValidCacheMinutes));
-                    return result;
+                        guPass = reader["gu_pass"] == DBNull.Value
+                            ? ""
+                            : reader["gu_pass"].ToString();
+                    }
                 }
-                catch (Exception ex)
+
+                bool result;
+                if (!IsPassValidateUser(conn, uid))
                 {
-                    lastError = ex.Message;
-                    Console.WriteLine("IsUserValid ERROR: " + ex.ToString());
-                    throw new InvalidOperationException(
-                        "User validation failed due to a database error: " + ex.Message, ex);
+                    result = true;
                 }
+                else if (string.IsNullOrEmpty(tokenPassHash))
+                {
+                    result = false;
+                }
+                else
+                {
+                    string tokenPass = CommonHelper.tokenDecrypt(tokenPassHash);
+                    result = string.Equals(tokenPass, guPass ?? "", StringComparison.OrdinalIgnoreCase);
+                }
+
+                _userValidCache[cacheKey] = (result, DateTime.UtcNow.AddMinutes(UserValidCacheMinutes));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                lastError = ex.Message;
+                Console.WriteLine("IsUserValid ERROR: " + ex.ToString());
+                throw new InvalidOperationException(
+                    "User validation failed due to a database error: " + ex.Message, ex);
             }
         }
 

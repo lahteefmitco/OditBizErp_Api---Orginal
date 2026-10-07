@@ -16,9 +16,10 @@ namespace MictcoWebService
         public static void Main(string[] args)
         {
             // Prevent thread-pool starvation under burst load.
-            // Default is ~4 (CPU cores) — too few when synchronous DB calls
-            // block threads before async code can take over.
-            ThreadPool.SetMinThreads(200, 200);
+            // IIS in-process needs enough threads to handle concurrent requests
+            // while some threads are blocked on synchronous DB calls in the
+            // UserSqlServer constructor. 500 is generous but safe.
+            ThreadPool.SetMinThreads(500, 500);
 
             CreateHostBuilder(args).Build().Run();
         }
