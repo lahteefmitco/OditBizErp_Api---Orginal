@@ -125,8 +125,7 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                if (csqlr != null)
-                    csqlr.close();
+                csqlr?.close();
             }
         }
         //[HttpPost("app-auth-decrypt")]

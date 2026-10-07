@@ -50,7 +50,7 @@ namespace MictcoWebService.Controllers
 
                 DataTable _temp = new DataTable();
                 SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM DATABASES WHERE D_ID = "+id+"", shop);
-                da.SelectCommand.CommandTimeout = 0;
+                da.SelectCommand.CommandTimeout = 60;
                 da.Fill(_temp);
                 DataTable dt = _temp;
                 shop.Close();

@@ -119,7 +119,7 @@ namespace MictcoWebService
                     c.OAuthUsePkce();
                 });
             ////}
-
+            
             app.UseCors("MyPolicy");
             app.UseStaticFiles();
             app.UseAuthentication();
@@ -128,10 +128,13 @@ namespace MictcoWebService
             app.UseHttpsRedirection();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGet("/", () => "Hello World!");
                 endpoints.MapControllers();
                 // Register hub route
                 endpoints.MapHub<Hubs.EcommerceHub>("/ecommerceHub");
             });
+
+            
         }
     }
 }

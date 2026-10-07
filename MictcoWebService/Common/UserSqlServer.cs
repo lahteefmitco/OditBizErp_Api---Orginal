@@ -279,7 +279,7 @@ namespace MictcoWebService.Common
                 if (OpenConnection())
                 {
                     cmd1 = new SqlCommand(qry, shop);
-                    cmd1.CommandTimeout = 0;
+                    cmd1.CommandTimeout = 60;
                     cmd1.ExecuteNonQuery();
                 }
                 return true;
@@ -296,7 +296,7 @@ namespace MictcoWebService.Common
             {
                 DataTable _temp = new DataTable();
                 da = new SqlDataAdapter(qry, shop);
-                da.SelectCommand.CommandTimeout = 0;
+                da.SelectCommand.CommandTimeout = 60;
                 da.Fill(_temp);
                 return _temp;
             }
@@ -307,7 +307,7 @@ namespace MictcoWebService.Common
             if (OpenConnection())
             {
                 SqlCommand cmd = new SqlCommand(qry, shop);
-                cmd.CommandTimeout = 0;
+                cmd.CommandTimeout = 60;
                 return cmd.ExecuteScalar();
             }
             return null;
@@ -336,7 +336,7 @@ namespace MictcoWebService.Common
             {
                 DataSet _temp = new DataSet();
                 da = new SqlDataAdapter(qry, shop);
-                da.SelectCommand.CommandTimeout = 0;
+                da.SelectCommand.CommandTimeout = 60;
                 da.Fill(_temp);
                 return _temp;
             }
@@ -1289,7 +1289,7 @@ namespace MictcoWebService.Common
                     cmd.Parameters.AddWithValue("@type1", dt1);
                     cmd.Parameters.AddWithValue("@type2", dt2);
                     cmd.Parameters.AddWithValue("@StatementType", statement);
-                    cmd.CommandTimeout = 0;
+                    cmd.CommandTimeout = 60;
                     cmd.Connection = shop;
                     SqlDataReader dr = cmd.ExecuteReader();
                     dr.Dispose();
@@ -1851,7 +1851,7 @@ namespace MictcoWebService.Common
                     cmd.Parameters.AddWithValue("@hep_remarks", model.hep_remarks);
                     cmd.Parameters.AddWithValue("@hep_status", model.hep_status);
                     cmd.Parameters.AddWithValue("@StatementType", statement);
-                    cmd.CommandTimeout = 0;
+                    cmd.CommandTimeout = 60;
                     cmd.Connection = shop;
                     SqlDataReader dr = cmd.ExecuteReader();
                     dr.Dispose();
@@ -1888,7 +1888,7 @@ namespace MictcoWebService.Common
                     cmd.Parameters.AddWithValue("@gn_user_id", userId);
                     cmd.Parameters.AddWithValue("@gn_location_id", locationId);
                     cmd.Parameters.AddWithValue("@StatementType", statement);
-                    cmd.CommandTimeout = 0;
+                    cmd.CommandTimeout = 60;
                     cmd.Connection = shop;
                     SqlDataReader dr = cmd.ExecuteReader();
                     dr.Dispose();
@@ -2244,7 +2244,7 @@ namespace MictcoWebService.Common
                     //cmd.Parameters.AddWithValue("@type3", _dtAddCostFromPopUp);
                     cmd.Parameters.AddWithValue("@StatementType", statementType);
 
-                    cmd.CommandTimeout = 0;
+                    cmd.CommandTimeout = 60;
                     cmd.Connection = shop;
                     SqlDataReader dr = cmd.ExecuteReader();
                     dr.Dispose();
@@ -2555,7 +2555,7 @@ namespace MictcoWebService.Common
                 cmd.CommandType = CommandType.StoredProcedure;
                 DataTable _temp = new DataTable();
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
-                adp.SelectCommand.CommandTimeout = 0;
+                adp.SelectCommand.CommandTimeout = 60;
                 adp.Fill(dataset);
                 return dataset;
             }

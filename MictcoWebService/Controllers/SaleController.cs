@@ -871,7 +871,7 @@ namespace MictcoWebService.Controllers
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "Sp_inv_lend_item_transactions";
                     cmd.Connection = usqlre.shop;
-                    cmd.CommandTimeout = 0;
+                    cmd.CommandTimeout = 60;
 
                     SqlParameter parm = new SqlParameter("@return", SqlDbType.Int);
                     parm.Direction = ParameterDirection.Output;

@@ -5,12 +5,12 @@ namespace MictcoWebService.Common
     /// <summary>
     /// ADO.NET SQL Server connection pool settings.
     /// Pooling is enabled, the pool holds at most 100 connections,
-    /// and opening a connection waits up to 2 minutes.
+    /// and opening a connection waits up to 15 seconds.
     /// </summary>
     public static class SqlConnectionPool
     {
         public const int MaxPoolSize = 100;
-        public const int ConnectionTimeoutSeconds = 2 * 60;
+        public const int ConnectionTimeoutSeconds = 15;
 
         public static string Apply(string connectionString)
         {

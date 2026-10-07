@@ -106,7 +106,7 @@ namespace MictcoWebService.Controllers
                     cmd.Parameters.AddWithValue("@ce_next_followup_date", model.nextDate);
 
                     cmd.Parameters.AddWithValue("@StatementType", "Insert");
-                    cmd.CommandTimeout = 0;
+                    cmd.CommandTimeout = 60;
                     cmd.Connection = usqlre.shop;
                     SqlDataReader dr = cmd.ExecuteReader();
                     dr.Dispose();

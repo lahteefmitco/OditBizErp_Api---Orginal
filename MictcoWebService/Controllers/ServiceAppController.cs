@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -30,9 +30,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("insert-service-complaint")]
         public async Task<IActionResult> InsertServiceComplaint(ServiceComplaintModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -57,7 +58,6 @@ namespace MictcoWebService.Controllers
 
                 DataTable dt = new DataTable();
                 dt.Load(dr);
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -80,6 +80,10 @@ namespace MictcoWebService.Controllers
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         // ---------------------------------------------------
@@ -88,9 +92,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("update-service-complaint")]
         public async Task<IActionResult> UpdateServiceComplaint(ServiceComplaintModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -115,7 +120,6 @@ namespace MictcoWebService.Controllers
 
                 DataTable dt = new DataTable();
                 dt.Load(dr);
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -138,6 +142,10 @@ namespace MictcoWebService.Controllers
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         // ---------------------------------------------------
@@ -146,9 +154,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("delete-service-complaint/{id}")]
         public async Task<IActionResult> DeleteServiceComplaint(int id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -161,7 +170,6 @@ namespace MictcoWebService.Controllers
 
                 DataTable dt = new DataTable();
                 dt.Load(dr);
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -183,6 +191,10 @@ namespace MictcoWebService.Controllers
                     message = "Error: " + ex.Message,
                     data = (object)null
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
 
@@ -700,9 +712,10 @@ namespace MictcoWebService.Controllers
                 return BadRequest(new { status = 0, message = "Invalid payload" });
 
 
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
                 if (!string.IsNullOrWhiteSpace(model.LendItemsJson))
                 {
@@ -774,7 +787,6 @@ namespace MictcoWebService.Controllers
 
                 await cmd.ExecuteNonQueryAsync();
                 decimal entryNo = Convert.ToDecimal(entryOut.Value);
-                usqlre.close();
 
                 return Ok(new
                 {
@@ -793,6 +805,10 @@ namespace MictcoWebService.Controllers
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("update-ticket")]
         public async Task<IActionResult> UpdateTicket([FromForm] ServiceTicketModel model, int ticketId)
@@ -800,9 +816,10 @@ namespace MictcoWebService.Controllers
             if (model == null)
                 return BadRequest(new { status = 0, message = "Invalid payload" });
 
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 if (!string.IsNullOrWhiteSpace(model.LendItemsJson))
@@ -851,7 +868,6 @@ namespace MictcoWebService.Controllers
                 imgTvp.SqlDbType = SqlDbType.Structured;
 
                 await cmd.ExecuteNonQueryAsync();
-                usqlre.close();
 
                 return Ok(new
                 {
@@ -869,6 +885,10 @@ namespace MictcoWebService.Controllers
                     statusCode = 500,
                     message = ex.Message
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
 
@@ -928,9 +948,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("remove-service-image/{imageId}")]
         public async Task<IActionResult> RemoveServiceImage(int imageId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 string imagePath = null;
@@ -956,7 +977,6 @@ namespace MictcoWebService.Controllers
                     await cmd.ExecuteNonQueryAsync();
                 }
 
-                usqlre.close();
 
                 // 3️⃣ Delete physical file
                 string fullPath = Path.Combine(
@@ -982,13 +1002,18 @@ namespace MictcoWebService.Controllers
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("get-ticket-by-id/{ticketId}")]
         public IActionResult GetTicketById(int ticketId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -1004,7 +1029,6 @@ namespace MictcoWebService.Controllers
                     da.Fill(ds);
                 }
 
-                usqlre.close();
 
                 if (ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
                 {
@@ -1046,6 +1070,10 @@ namespace MictcoWebService.Controllers
                     statusCode = 500,
                     message = ex.Message
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
 
@@ -1534,9 +1562,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("insert-qc-list")]
         public async Task<IActionResult> InsertQcList(QCModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -1551,7 +1580,6 @@ namespace MictcoWebService.Controllers
 
                 DataTable dt = new DataTable();
                 dt.Load(dr);
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -1574,6 +1602,10 @@ namespace MictcoWebService.Controllers
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         // ---------------------------------------------------
@@ -1582,9 +1614,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("update-qc-list")]
         public async Task<IActionResult> UpdateQcList(QCModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -1601,7 +1634,6 @@ namespace MictcoWebService.Controllers
 
                 DataTable dt = new DataTable();
                 dt.Load(dr);
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -1624,6 +1656,10 @@ namespace MictcoWebService.Controllers
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         // ---------------------------------------------------
@@ -1632,9 +1668,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("delete-qc-list/{id}")]
         public async Task<IActionResult> DeleteQcList(int id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -1646,7 +1683,6 @@ namespace MictcoWebService.Controllers
 
                 DataTable dt = new DataTable();
                 dt.Load(dr);
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -1668,6 +1704,10 @@ namespace MictcoWebService.Controllers
                     message = "Error: " + ex.Message,
                     data = (object)null
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
 
@@ -1756,9 +1796,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("insert-items-collected")]
         public async Task<IActionResult> InsertItemsCollected(ItemsCollectedModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -1773,7 +1814,6 @@ namespace MictcoWebService.Controllers
 
                 DataTable dt = new DataTable();
                 dt.Load(dr);
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -1795,6 +1835,10 @@ namespace MictcoWebService.Controllers
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         // ---------------------------------------------------
         // UPDATE
@@ -1802,9 +1846,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("update-items-collected")]
         public async Task<IActionResult> UpdateItemsCollected(ItemsCollectedModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -1820,7 +1865,6 @@ namespace MictcoWebService.Controllers
 
                 DataTable dt = new DataTable();
                 dt.Load(dr);
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -1842,6 +1886,10 @@ namespace MictcoWebService.Controllers
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         // ---------------------------------------------------
         // DELETE
@@ -1849,9 +1897,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("delete-items-collected/{id}")]
         public async Task<IActionResult> DeleteItemsCollected(int id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -1864,7 +1913,6 @@ namespace MictcoWebService.Controllers
 
                 DataTable dt = new DataTable();
                 dt.Load(dr);
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -1885,6 +1933,10 @@ namespace MictcoWebService.Controllers
                     message = "Error: " + ex.Message,
                     data = (object)null
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
         // ---------------------------------------------------
@@ -1993,9 +2045,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("insert-description")]
         public async Task<IActionResult> InsertDescription(string descName)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -2008,7 +2061,6 @@ namespace MictcoWebService.Controllers
                 DataTable dt = new DataTable();
                 dt.Load(dr);
 
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -2030,6 +2082,10 @@ namespace MictcoWebService.Controllers
                     message = "Error: " + ex.Message,
                     data = (object)null
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
 
@@ -2067,9 +2123,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("assign-technician")]
         public async Task<IActionResult> AssignTechnician(int si_entryno, int as_id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -2107,13 +2164,18 @@ namespace MictcoWebService.Controllers
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("update-technician-status")]
         public async Task<IActionResult> UpdateStatus([FromBody] TicketStatusModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -2151,10 +2213,15 @@ namespace MictcoWebService.Controllers
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("update-generalRemarks")]
         public async Task<IActionResult> UpdategeneralRemarks([FromBody] GeneralRemarksModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
 
@@ -2190,7 +2257,7 @@ namespace MictcoWebService.Controllers
                         data = (object)null
                     });
                 }
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -2226,13 +2293,18 @@ namespace MictcoWebService.Controllers
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("get-generalRemarks")]
         public async Task<IActionResult> GetgeneralRemarks(int ticket_id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -2266,13 +2338,18 @@ namespace MictcoWebService.Controllers
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("relocate-technician")]
         public async Task<IActionResult> RelocatedTechnician(int si_entryno, int as_id, string remarks)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -2309,6 +2386,10 @@ namespace MictcoWebService.Controllers
                     message = "Error: " + ex.Message,
                     data = (object)null
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
         [HttpGet("get-tickets")]
@@ -2589,7 +2670,7 @@ WHERE s.si_str_id = 12
             CommandType commandType,
             params SqlParameter[] parameters)
         {
-            UserSqlServer usqlre = new UserSqlServer(this);
+            UserSqlServer usqlre = new UserSqlServer(this, validateUser: false);
             string connectionString = usqlre.getConnectionString();
             if (string.IsNullOrWhiteSpace(connectionString))
                 throw new InvalidOperationException("Database connection string is missing.");
@@ -2637,9 +2718,10 @@ WHERE s.si_str_id = 12
         [HttpGet("get-tickets-by-id")]
         public async Task<IActionResult> GetTicketsById(int Id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -2690,6 +2772,10 @@ WHERE s.si_str_id = 12
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpGet("technician-list")]
@@ -2727,9 +2813,10 @@ WHERE s.si_str_id = 12
         [HttpGet("technician-dashboard")]
         public async Task<IActionResult> GetTechnicianDashboard(int id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -2781,16 +2868,21 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("insert-spare")]
         public async Task<IActionResult> InsertSpare([FromBody] SpareRequestModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
-                SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
+                using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@sr_ticket_no", model.sr_ticket_no);
                 cmd.Parameters.AddWithValue("@sr_item_id", model.sr_item_id);
@@ -2810,7 +2902,6 @@ WHERE s.si_str_id = 12
 
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -2832,13 +2923,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("close-spare")]
         public async Task<IActionResult> CloseSpare(int sr_id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -2848,7 +2944,6 @@ WHERE s.si_str_id = 12
 
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -2870,13 +2965,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("approve-spare")]
         public async Task<IActionResult> ApproveSpare([FromBody] SpareApproveModel model, int id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -2900,7 +3000,6 @@ WHERE s.si_str_id = 12
 
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -2922,13 +3021,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("reject-spare")]
         public async Task<IActionResult> RejectSpare(int id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -2939,7 +3043,6 @@ WHERE s.si_str_id = 12
 
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -2961,13 +3064,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("reject-spare-by-technician")]
         public async Task<IActionResult> RejectSpareByTechnician(int id, string reason)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -2979,7 +3087,6 @@ WHERE s.si_str_id = 12
 
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -3001,13 +3108,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("spare-list")]
         public async Task<IActionResult> SpareList(string? searchKey)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -3017,7 +3129,6 @@ WHERE s.si_str_id = 12
 
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -3039,14 +3150,19 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpGet("spare-request-list")]
         public async Task<IActionResult> SpareRequestList()
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -3060,7 +3176,6 @@ WHERE s.si_str_id = 12
                 {
                     da.Fill(ds);
                 }
-                usqlre.close();
 
                 var spareList = new List<object>();
 
@@ -3125,14 +3240,19 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpGet("spare-reject-list")]
         public async Task<IActionResult> SpareRejectList()
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -3141,7 +3261,6 @@ WHERE s.si_str_id = 12
 
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -3163,13 +3282,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("spare-detailed")]
         public async Task<IActionResult> SpareDetailed(int ir_id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Stock", usqlre.shop);
@@ -3179,7 +3303,6 @@ WHERE s.si_str_id = 12
 
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -3201,13 +3324,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("spare-parts-history")]
         public async Task<IActionResult> SparePartsHistory(int? ir_id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -3217,7 +3345,6 @@ WHERE s.si_str_id = 12
 
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -3239,13 +3366,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("get-spare-detailed")]
         public async Task<IActionResult> GetSpareDetailed(int Id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -3310,13 +3442,18 @@ WHERE s.si_str_id = 12
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("technician-dashboard-detailed")]
         public async Task<IActionResult> GetTechnicianDashboardDetailed(int as_id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -3327,7 +3464,6 @@ WHERE s.si_str_id = 12
                 DataSet ds = new DataSet();
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 da.Fill(ds);
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -3356,13 +3492,18 @@ WHERE s.si_str_id = 12
 
                 return StatusCode(500, responseObj);
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("get-all-customers")]
         public async Task<IActionResult> GetAllCustomers(string search = "")
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -3374,7 +3515,6 @@ WHERE s.si_str_id = 12
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
 
-                usqlre.close();
                 var responseObj = new
                 {
                     status = true,
@@ -3393,13 +3533,18 @@ WHERE s.si_str_id = 12
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("search-customer-by-mobile")]
         public async Task<IActionResult> SearchCustomerByMobile(string mobile = "")
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -3411,7 +3556,6 @@ WHERE s.si_str_id = 12
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
 
-                usqlre.close();
                 var responseObj = new
                 {
                     status = true,
@@ -3429,6 +3573,10 @@ WHERE s.si_str_id = 12
                     statusCode = 500,
                     message = ex.Message
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
         // ---------------------------------------------------
@@ -3815,7 +3963,7 @@ WHERE s.si_str_id = 12
                     cmd.Parameters.AddWithValue("@type1", dt1);
                     cmd.Parameters.AddWithValue("@type2", dtlent);
                     cmd.Parameters.AddWithValue("@StatementType", model.StatementType ?? "insert");
-                    cmd.CommandTimeout = 0;
+                    cmd.CommandTimeout = 60;
                     cmd.Connection = usqlre.shop;
                     SqlDataReader dr = cmd.ExecuteReader();
                     dr.Dispose();
@@ -3888,6 +4036,10 @@ WHERE s.si_str_id = 12
                     message = ex.Message,
                     data = (object)null
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
 
             return Ok(new
@@ -4294,7 +4446,7 @@ WHERE s.si_str_id = 12
                     cmd.Parameters.AddWithValue("@type1", dt1);
                     cmd.Parameters.AddWithValue("@type2", dtlent);
                     cmd.Parameters.AddWithValue("@StatementType", "Update");
-                    cmd.CommandTimeout = 0;
+                    cmd.CommandTimeout = 60;
                     cmd.Connection = usqlre.shop;
                     //SqlDataReader dr = cmd.ExecuteReader();
                     //dr.Dispose();
@@ -4371,6 +4523,10 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
 
             return Ok(new
             {
@@ -4388,9 +4544,10 @@ WHERE s.si_str_id = 12
         [HttpPost("qc-approve")]
         public async Task<IActionResult> QcApprove(QCApproveModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -4426,7 +4583,6 @@ WHERE s.si_str_id = 12
 
                 DataTable dt = new DataTable();
                 dt.Load(dr);
-                usqlre.close();
                 var responseObj = new
                 {
                     status = true,
@@ -4446,13 +4602,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("get-qc-by-ticket-id/{ticketId}")]
         public IActionResult GetQCByTicketId(int ticketId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -4468,7 +4629,6 @@ WHERE s.si_str_id = 12
                     da.Fill(ds);
                 }
 
-                usqlre.close();
 
                 if (ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
                 {
@@ -4514,13 +4674,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("qc-completed-list")]
         public async Task<IActionResult> QcCompletedList()
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -4554,13 +4719,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("get-completed-list-detailed")]
         public async Task<IActionResult> GetQCCompletedListDetailed(int Id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -4611,13 +4781,18 @@ WHERE s.si_str_id = 12
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("delivery-list")]
         public async Task<IActionResult> DeliveryList()
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -4651,13 +4826,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("completed-works")]
         public async Task<IActionResult> GetCompletedWorks(DateTime? fromDate, DateTime? toDate, string search = "")
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -4692,13 +4872,18 @@ WHERE s.si_str_id = 12
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("completed_works-detailed")]
         public async Task<IActionResult> GetCompletedWorksDetailed(int id, int si_str_id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -4751,13 +4936,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("service-return")]
         public async Task<IActionResult> ServiceReturn(int si_entryno, int as_id, string remarks, int si_str_id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -4796,13 +4986,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("get-delivery-by-id/{deliveryId}")]
         public IActionResult GetDeliveryById(int deliveryId, int si_str_id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -4819,7 +5014,6 @@ WHERE s.si_str_id = 12
                     da.Fill(ds);
                 }
 
-                usqlre.close();
 
                 if (ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
                 {
@@ -4863,13 +5057,18 @@ WHERE s.si_str_id = 12
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("search-customer-tickets-inf")]
         public IActionResult SearchCustomerTicketsInf(SearchModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -4916,13 +5115,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("search-customer-tickets")]
         public IActionResult SearchCustomerTickets(string search)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -4991,13 +5195,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpGet("get-all-users")]
         public IActionResult GetAllUsers()
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -5031,6 +5240,10 @@ WHERE s.si_str_id = 12
                     message = "Error: " + ex.Message,
                     data = (object)null
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
         [HttpGet("get-service-item")]
@@ -5068,9 +5281,10 @@ WHERE s.si_str_id = 12
         [HttpPost("move-to-get_tickets")]
         public async Task<IActionResult> MoveToGetTickets(long si_entryno)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -5106,13 +5320,18 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("insert-service-customer")]
         public async Task<IActionResult> InsertAccSubHead(AccSubHeadModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -5131,7 +5350,6 @@ WHERE s.si_str_id = 12
                 DataTable dt = new DataTable();
                 dt.Load(dr);
 
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -5152,13 +5370,18 @@ WHERE s.si_str_id = 12
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("update-service-customer")]
         public async Task<IActionResult> UpdateAccSubHead(AccSubHeadModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -5178,7 +5401,6 @@ WHERE s.si_str_id = 12
                 DataTable dt = new DataTable();
                 dt.Load(dr);
 
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -5199,11 +5421,16 @@ WHERE s.si_str_id = 12
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpPost("insert-billwise-receipt")]
         public async Task<IActionResult> InsertBillwiseReceipt([FromBody] BillwiseReceiptModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
                 if (model.Details == null || model.Details.Count == 0)
@@ -5216,7 +5443,7 @@ WHERE s.si_str_id = 12
                     });
                 }
 
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 int locationId = model.vbri_location_id > 0 ? model.vbri_location_id : Convert.ToInt32(usqlre.locationId);
@@ -5226,7 +5453,6 @@ WHERE s.si_str_id = 12
 
                 if (partyAccId <= 0)
                 {
-                    usqlre.close();
                     return BadRequest(new
                     {
                         status = false,
@@ -5254,7 +5480,6 @@ WHERE s.si_str_id = 12
                 DataTable dtResult = new DataTable();
                 dtResult.Load(dr);
 
-                usqlre.close();
 
                 var responseObj = new
                 {
@@ -5274,6 +5499,10 @@ WHERE s.si_str_id = 12
                     statusCode = 500,
                     message = ex.Message
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
 
@@ -5495,7 +5724,6 @@ WHERE s.si_str_id = 12
                     await approveCmd.ExecuteNonQueryAsync();
                 }
 
-                usqlre.close();
 
                 return Ok(new
                 {
@@ -5959,9 +6187,10 @@ WHERE s.si_str_id = 12
         [HttpPost("technician-loss-report")]
         public async Task<IActionResult> TechnicianLossReport([FromBody] TechnicianLossReportModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
@@ -5978,7 +6207,6 @@ WHERE s.si_str_id = 12
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
 
-                usqlre.close();
 
 
                 return Content(
@@ -6000,6 +6228,10 @@ WHERE s.si_str_id = 12
                     status = false,
                     message = ex.Message
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
 
@@ -6122,9 +6354,10 @@ WHERE s.si_str_id = 12
         [HttpGet("service-complaint-dashboard")]
         public async Task<IActionResult> GetServiceComplaintDashboard(DateTime? fromDate, DateTime? toDate, int? locationId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 DateTime today = DateTime.Today;
@@ -6148,7 +6381,6 @@ WHERE s.si_str_id = 12
                 {
                     da.Fill(dt);
                 }
-                usqlre.close();
 
                 int unassigned = 0, assigned = 0, inProgress = 0, hold = 0, notOk = 0;
                 int awaitingQc = 0, qcRejected = 0, readyForDelivery = 0, deliveredToday = 0;
@@ -6204,14 +6436,19 @@ WHERE s.si_str_id = 12
                     data = (object)null
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpGet("collections-loss-dashboard")]
         public async Task<IActionResult> GetCollectionsLossDashboard(DateTime? fromDate, DateTime? toDate, int? locationId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 usqlre.OpenConnection();
 
                 DateTime filterFrom = fromDate?.Date ?? DateTime.Today;
@@ -6230,7 +6467,6 @@ WHERE s.si_str_id = 12
                 {
                     da.Fill(dt);
                 }
-                usqlre.close();
 
                 decimal invoicedAmount = 0, collectedAmount = 0, outstandingAmount = 0, technicianLoss = 0;
                 string locationName = "";
@@ -6274,6 +6510,10 @@ WHERE s.si_str_id = 12
                     message = "Error: " + ex.Message,
                     data = (object)null
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
     }

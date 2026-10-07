@@ -20,7 +20,10 @@ namespace MictcoWebService.Controllers
         [HttpPost("dashboard-odbz")]
         public async Task<IActionResult> DashboardOditBiz([FromBody] AccReportModel model)
         {
-            UserSqlServer usqlre = new UserSqlServer(this);
+            UserSqlServer usqlre = null;
+            try
+            {
+            usqlre = new UserSqlServer(this);
             if (string.IsNullOrEmpty(model.StatementType))
             {
                 var hash = new Dictionary<string, DataTable>();
@@ -50,7 +53,6 @@ namespace MictcoWebService.Controllers
                             GROUP BY ir_name ORDER BY Count DESC";
                 DataTable dataTable1 = usqlre.dbReaderFill(sql);
                 hash.Add("TopSellingItems", dataTable1);
-                usqlre.close();
                 string sql1 = $@"SELECT TOP 5 customer_name, SUM(net_sale_total) AS total_purchase
                     FROM (
                     SELECT 
@@ -82,7 +84,6 @@ namespace MictcoWebService.Controllers
                     ORDER BY total_purchase DESC";
                 DataTable dataTable2 = usqlre.dbReaderFill(sql1);
                 hash.Add("TopCustomer", dataTable2);
-                usqlre.close();
 
                 string jsonResult = ReportModelContext.searializeDt(hash);
                 return Content(jsonResult, "application/json");
@@ -99,17 +100,32 @@ namespace MictcoWebService.Controllers
                                     "@StatementType = '" + model.StatementType + "'";
 
                 DataSet ds = usqlre.dbreadDataset(query);
-                usqlre.close();
                 return Ok(ReportModelContext.searializeDt(ds));
+            }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    status = false,
+                    status_code = 500,
+                    message = "An error occurred: " + ex.Message,
+                    data = new object[] { }
+                });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
         [HttpPost("dashboard")]
         public async Task<IActionResult> Dashboard([FromBody] DashboardModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
                 Dictionary<string, object> hash = new Dictionary<string, object>();
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 string sql = "";
 
                 if (model.Location != 0)
@@ -546,7 +562,6 @@ namespace MictcoWebService.Controllers
 
                 DataTable top_expense = usqlre.dbReaderFill(sql);
                 hash.Add("top_expense", top_expense);
-                usqlre.close();
                 var response = new
                 {
                     status = true,
@@ -567,14 +582,19 @@ namespace MictcoWebService.Controllers
                     data = new object[] { } 
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("admin-dashboard")]
         public async Task<IActionResult> AdminDashboard([FromBody] DashboardModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
                 Dictionary<string, object> hash = new Dictionary<string, object>();
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 string sql = "";
                 if (usqlre.user_role == "ADMIN")
                 {
@@ -837,7 +857,6 @@ namespace MictcoWebService.Controllers
 
                     DataTable top_expense = usqlre.dbReaderFill(sql);
                     hash.Add("top_expense", top_expense);
-                    usqlre.close();
                     
                 }
                 var response = new
@@ -862,14 +881,19 @@ namespace MictcoWebService.Controllers
                     data = new object[] { }
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("user-dashboard")]
         public async Task<IActionResult> UserDashboard([FromBody] DashboardModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
                 Dictionary<string, object> hash = new Dictionary<string, object>();
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 string sql = "";
                 if (usqlre.user_role != "ADMIN")
                 {
@@ -1142,7 +1166,6 @@ namespace MictcoWebService.Controllers
 
                     DataTable top_expense = usqlre.dbReaderFill(sql);
                     hash.Add("top_expense", top_expense);
-                    usqlre.close();
 
                 }
                 var response = new
@@ -1167,15 +1190,20 @@ namespace MictcoWebService.Controllers
                     data = new object[] { }
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpPost("dashboard-insights")]
         public async Task<IActionResult> DashboardInsights([FromBody] InsightsModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
                 string sql = "";
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 if (model.Location != 0)
                 {
                     sql = @"SELECT 
@@ -1261,7 +1289,6 @@ namespace MictcoWebService.Controllers
                 }
                
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
                 if (dt.Rows.Count > 0)
                 {
                     var row = dt.Rows[0];
@@ -1320,15 +1347,20 @@ namespace MictcoWebService.Controllers
                     data = new object[] { } // Empty array to match your structure
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
 
         }
 
         [HttpPost("financial-statement")]
         public async Task<IActionResult> FinancialStatement(FinancialStatementsModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 string sql;
                 if (model.Location !=0)
                 {
@@ -1355,7 +1387,6 @@ namespace MictcoWebService.Controllers
                 }
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
 
                 if (dt.Rows.Count > 0)
                 {
@@ -1394,13 +1425,18 @@ namespace MictcoWebService.Controllers
                     data = new object[] { } // Empty array to match your structure
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("financial-statement-new")]
         public async Task<IActionResult> FinancialStatementNew()
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 string sql;
                 if (usqlre.user_role == "ADMIN")
                 {
@@ -1438,7 +1474,6 @@ namespace MictcoWebService.Controllers
                 }
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
 
                 if (dt.Rows.Count > 0)
                 {
@@ -1477,14 +1512,19 @@ namespace MictcoWebService.Controllers
                     data = new object[] { } // Empty array to match your structure
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpPost("payable-receivable")]
         public async Task<IActionResult> PayableReceivable(PayableReceivablesModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 string sql;
                 if (model.Location !=0)
                 {
@@ -1518,7 +1558,6 @@ namespace MictcoWebService.Controllers
 
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
                 if (dt.Rows.Count > 0)
                 {
                     var data = new
@@ -1556,14 +1595,19 @@ namespace MictcoWebService.Controllers
                     data = new object[] { } // Empty array to match your structure
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
             
         }
         [HttpPost("cashflow")]
         public async Task<IActionResult> CashFlow(CashFlowsModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 string sql;
 
                 if (model.Location != 0)
@@ -1591,7 +1635,6 @@ namespace MictcoWebService.Controllers
                 }
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
 
                 if (dt.Rows.Count > 0)
                 {
@@ -1631,14 +1674,19 @@ namespace MictcoWebService.Controllers
                     data = new List<object>() // Empty list for consistency
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpPost("income-expense")]
         public async Task<IActionResult> IncomeExpense(IncomeExpensesModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 string sql;
                 if (model.Location != 0)
                 {
@@ -1782,7 +1830,6 @@ namespace MictcoWebService.Controllers
 
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
                 if (dt.Rows.Count > 0)
                 {
                     var data = dt.AsEnumerable()
@@ -1822,14 +1869,19 @@ namespace MictcoWebService.Controllers
                     data = new object[] { } // Empty array to match your structure
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
             
         }
         [HttpPost("top-expense")]
         public async Task<IActionResult> TopExpense(TopExpensesModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 string sql;
 
                 if (model.Location != 0)
@@ -1869,7 +1921,6 @@ namespace MictcoWebService.Controllers
                 }
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
 
                 if (dt.Rows.Count > 0)
                 {
@@ -1910,16 +1961,20 @@ namespace MictcoWebService.Controllers
                     data = new object[] { }
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
 
         }
         [HttpPost("top-selling-products")]
         public async Task<IActionResult> TopSellingProducts([FromBody] TopSellingProductsModel model)
         {
             var result = new List<object>();
-
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 string fromDate = model.FromDate.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 string toDate = model.ToDate.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -1958,7 +2013,6 @@ namespace MictcoWebService.Controllers
                     ORDER BY qty DESC";
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
 
                 if (dt.Rows.Count > 0)
                 {
@@ -2000,16 +2054,20 @@ namespace MictcoWebService.Controllers
                     data = new object[] { }
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpPost("top-customers")]
         public async Task<IActionResult> TopCustomers([FromBody] TopCustomersModel model)
         {
             var result = new List<object>();
-
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 string fromDate = model.FromDate.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 string toDate = model.ToDate.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -2041,7 +2099,6 @@ namespace MictcoWebService.Controllers
                     ORDER BY amount DESC";
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
 
                 if (dt.Rows.Count > 0)
                 {
@@ -2082,16 +2139,20 @@ namespace MictcoWebService.Controllers
                     data = new object[] { }
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpPost("top-suppliers")]
         public async Task<IActionResult> TopSuppliers([FromBody] TopCreditorsModel model)
         {
             var result = new List<object>();
-
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 string fromDate = model.FromDate.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 string toDate = model.ToDate.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -2121,7 +2182,6 @@ namespace MictcoWebService.Controllers
                 ORDER BY amount DESC";
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
 
                 if (dt.Rows.Count > 0)
                 {
@@ -2162,15 +2222,19 @@ namespace MictcoWebService.Controllers
                     data = new object[] { }
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("top-creditors")]
         public async Task<IActionResult> TopCreditors([FromBody] TopCreditorsModel model)
         {
             var result = new List<object>();
-
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 string fromDate = model.FromDate.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 string toDate = model.ToDate.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -2201,7 +2265,6 @@ namespace MictcoWebService.Controllers
                 GROUP BY as_name order by Balance desc";
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
 
                 if (dt.Rows.Count > 0)
                 {
@@ -2242,13 +2305,18 @@ namespace MictcoWebService.Controllers
                     data = new object[] { }
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("top-debitors")]
         public async Task<IActionResult> TopDebitors([FromBody] TopCreditorsModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 string fromDate = model.FromDate.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 string toDate = model.ToDate.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -2279,7 +2347,6 @@ namespace MictcoWebService.Controllers
                 GROUP BY as_name order by Balance desc";
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
 
                 if (dt.Rows.Count > 0)
                 {
@@ -2320,13 +2387,18 @@ namespace MictcoWebService.Controllers
                     data = new object[] { }
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
         [HttpPost("top-aging-bills")]
         public IActionResult TopAgingBills([FromBody] TopAgingBillsModel model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
                 int locId = model.Location; // 0 = all
 
                 string sql = "";
@@ -2410,7 +2482,6 @@ namespace MictcoWebService.Controllers
                 }
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
 
                 if (dt.Rows.Count == 0)
                 {
@@ -2457,6 +2528,10 @@ namespace MictcoWebService.Controllers
                     data = new object[] { }
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
@@ -2464,9 +2539,10 @@ namespace MictcoWebService.Controllers
         public async Task<IActionResult> TopCustomerProfit([FromBody] TopCustomerProfitModel model)
         {
             var result = new List<object>();
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 string fromDate = model.FromDate.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 string toDate = model.ToDate.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -2516,7 +2592,6 @@ namespace MictcoWebService.Controllers
             ORDER BY profit DESC";
 
                 DataTable dt = usqlre.dbReaderFill(sql);
-                usqlre.close();
 
                 if (dt.Rows.Count > 0)
                 {
@@ -2564,6 +2639,10 @@ namespace MictcoWebService.Controllers
                     total_profit = 0,
                     data = new object[] { }
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
 

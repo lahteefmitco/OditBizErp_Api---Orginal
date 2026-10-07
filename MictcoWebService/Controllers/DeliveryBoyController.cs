@@ -22,9 +22,10 @@ namespace MictcoWebService.Controllers
         [HttpGet("deliveryboy-dashboard")]
         public async Task<IActionResult> DeliveryBoyDashboard(string fromDate, string toDate, string routeId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 Dictionary<string, object> hash = new Dictionary<string, object>();
 
@@ -624,8 +625,6 @@ namespace MictcoWebService.Controllers
 
                 hash.Add("recent_visit", recentVisit);
 
-                usqlre.close();
-
                 string jsonResult = ReportModelContext.searializeDt(hash);
                 return Content(jsonResult, "application/json");
             }
@@ -637,15 +636,20 @@ namespace MictcoWebService.Controllers
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
         [HttpGet("total-shop-list")]
         public async Task<IActionResult> TotalShopList(string routeId, string toDate)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 Dictionary<string, DataTable> hash = new Dictionary<string, DataTable>();
                 if (string.IsNullOrEmpty(toDate))
@@ -717,8 +721,6 @@ namespace MictcoWebService.Controllers
 
                 hash.Add("total_shop", totalShop);
 
-                usqlre.close();
-
                 string jsonResult = ReportModelContext.searializeDt(hash);
 
                 return Content(jsonResult, "application/json");
@@ -731,15 +733,20 @@ namespace MictcoWebService.Controllers
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
         [HttpGet("pending-shop-list")]
         public async Task<IActionResult> PendingShopList(string fromDate, string toDate, string routeId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 
 
@@ -846,8 +853,6 @@ namespace MictcoWebService.Controllers
 
                 hash.Add("pending_shop", pendingShop);
 
-                usqlre.close();
-
                 string jsonResult = ReportModelContext.searializeDt(hash);
 
                 return Content(jsonResult, "application/json");
@@ -860,15 +865,20 @@ namespace MictcoWebService.Controllers
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
         [HttpGet("shop-covered-list")]
         public async Task<IActionResult> ShopCoveredList(string fromDate, string toDate, string routeId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
 
                 Dictionary<string, DataTable> hash = new Dictionary<string, DataTable>();
@@ -963,8 +973,6 @@ namespace MictcoWebService.Controllers
 
                 hash.Add("shop_covered", coveredShop);
 
-                usqlre.close();
-
                 string jsonResult = ReportModelContext.searializeDt(hash);
 
                 return Content(jsonResult, "application/json");
@@ -977,14 +985,19 @@ namespace MictcoWebService.Controllers
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpGet("skip-shop-list")]
         public async Task<IActionResult> SkipShopList(string fromDate, string toDate, string routeId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 Dictionary<string, DataTable> hash = new Dictionary<string, DataTable>();
 
@@ -1084,8 +1097,6 @@ namespace MictcoWebService.Controllers
 
                 hash.Add("skip_shop", skipShop);
 
-                usqlre.close();
-
                 string jsonResult = ReportModelContext.searializeDt(hash);
 
                 return Content(jsonResult, "application/json");
@@ -1098,14 +1109,19 @@ namespace MictcoWebService.Controllers
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpGet("shop-details")]
         public async Task<IActionResult> ShopDetails(int shop_Id)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 Dictionary<string, DataTable> hash = new Dictionary<string, DataTable>();
 
@@ -1193,8 +1209,6 @@ namespace MictcoWebService.Controllers
 
                 hash.Add("shop_details", shopDetails);
 
-                usqlre.close();
-
                 string jsonResult = ReportModelContext.searializeDt(hash);
 
                 return Content(jsonResult, "application/json");
@@ -1207,6 +1221,10 @@ namespace MictcoWebService.Controllers
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
@@ -1214,9 +1232,10 @@ namespace MictcoWebService.Controllers
         [HttpGet("route-start-summary")]
         public async Task<IActionResult> RouteStartSummary(int routeId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 Dictionary<string, DataTable> hash = new Dictionary<string, DataTable>();
 
@@ -1262,8 +1281,6 @@ namespace MictcoWebService.Controllers
 
                 hash.Add("route_summary", routeSummary);
 
-                usqlre.close();
-
                 string jsonResult = ReportModelContext.searializeDt(hash);
 
                 return Content(jsonResult, "application/json");
@@ -1276,6 +1293,10 @@ namespace MictcoWebService.Controllers
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
@@ -1285,6 +1306,7 @@ public async Task<IActionResult> UploadMeterPhoto(
 IFormFile photo,
 string historyId)
         {
+            UserSqlServer usqlre = null;
             try
             {
                 if (photo == null || photo.Length == 0)
@@ -1296,7 +1318,7 @@ string historyId)
                     });
                 }
 
-                UserSqlServer usqlre =
+                usqlre =
                 new UserSqlServer(this);
 
                 string baseUrl;
@@ -1350,8 +1372,6 @@ string historyId)
 
                 usqlre.dbExecute(sql);
 
-                usqlre.close();
-
                 return Ok(new
                 {
                     status = true,
@@ -1370,6 +1390,10 @@ string historyId)
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
@@ -1377,9 +1401,10 @@ string historyId)
         [HttpPost("start-ride")]
         public async Task<IActionResult> StartRide([FromBody] StartRouteRide model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 string checkSql = @"
 
@@ -1482,8 +1507,6 @@ string historyId)
                     DataTable historyDt = usqlre.dbReaderFill(historySql);
                     int historyId = Convert.ToInt32(historyDt.Rows[0]["history_id"]);
 
-                    usqlre.close();
-
                     return Ok(new
                     {
                         status = true,
@@ -1582,8 +1605,6 @@ string historyId)
                         usqlre.dbExecute(endSql);
                     }
 
-                    usqlre.close();
-
                     return Ok(new
                     {
                         status = true,
@@ -1601,6 +1622,10 @@ string historyId)
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
@@ -1608,9 +1633,10 @@ string historyId)
         [HttpGet("shop-status-list")]
         public async Task<IActionResult> RouteWiseShopStatusList(string routeId, string fromDate, string toDate)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 Dictionary<string, DataTable> hash = new Dictionary<string, DataTable>();
 
@@ -1891,8 +1917,6 @@ string historyId)
 
                 hash.Add("shop_status_list", shopStatus);
 
-                usqlre.close();
-
                 string jsonResult = ReportModelContext.searializeDt(hash);
 
                 return Content(jsonResult, "application/json");
@@ -1905,14 +1929,19 @@ string historyId)
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpPost("shop-checkin")]
         public async Task<IActionResult> ShopCheckin([FromBody] ShopCheckin model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 string checkSql = @"
 
@@ -2025,8 +2054,6 @@ string historyId)
 
                 usqlre.dbReaderFill(sql);
 
-                usqlre.close();
-
                 return Ok(new
                 {
                     status = true,
@@ -2041,14 +2068,19 @@ string historyId)
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpPost("shop-checkout")]
         public async Task<IActionResult> ShopCheckout([FromBody] ShopCheckOut model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 string rideStatusSql = @"
 
@@ -2138,8 +2170,6 @@ string historyId)
 
                 usqlre.dbExecute(sql);
 
-                usqlre.close();
-
                 return Ok(new
                 {
                     status = true,
@@ -2154,15 +2184,20 @@ string historyId)
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
         [HttpPost("skip-shop")]
         public async Task<IActionResult> SkipShop([FromBody] SkipShop model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 string checkSql = @"
 
@@ -2295,8 +2330,6 @@ string historyId)
 
                 usqlre.dbExecute(sql);
 
-                usqlre.close();
-
                 return Ok(new
                 {
                     status = true,
@@ -2311,6 +2344,10 @@ string historyId)
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpGet("salesman-locations")]
@@ -2318,9 +2355,10 @@ string historyId)
     int salesmanId,
     string toDate)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 string sql = @"
 
@@ -2461,8 +2499,6 @@ ORDER BY
                 DataTable locations =
                     usqlre.dbReaderFill(sql);
 
-                usqlre.close();
-
                 Dictionary<string, DataTable> hash =
                     new Dictionary<string, DataTable>();
 
@@ -2484,15 +2520,20 @@ ORDER BY
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
         [HttpPost("shop-action-skip")]
         public async Task<IActionResult> ShopActionSkip([FromBody] ShopActionSkip model)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
 
                 // CHECK SHOP CHECKIN COMPLETED
@@ -2627,8 +2668,6 @@ ORDER BY
 
                 usqlre.dbExecute(sql);
 
-                usqlre.close();
-
                 return Ok(new
                 {
                     status = true,
@@ -2643,15 +2682,20 @@ ORDER BY
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
         [HttpGet("salesman-ride-status-list")]
         public async Task<IActionResult> SalesmanRideStatusList()
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 Dictionary<string, DataTable> hash =
                 new Dictionary<string, DataTable>();
@@ -2769,8 +2813,6 @@ ORDER BY
 
                 hash.Add("salesman_ride_list", salesmanList);
 
-                usqlre.close();
-
                 string jsonResult =
                 ReportModelContext.searializeDt(hash);
 
@@ -2784,6 +2826,10 @@ ORDER BY
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
@@ -2794,9 +2840,10 @@ ORDER BY
  string toDate,
  int routeId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 if (usqlre.user_role != "ADMIN")
                 {
@@ -3072,8 +3119,6 @@ ORDER BY
 
                 hash.Add("recent_visit", recentVisit);
 
-                usqlre.close();
-
                 string jsonResult =
                 ReportModelContext.searializeDt(hash);
 
@@ -3087,6 +3132,10 @@ ORDER BY
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpGet("admin-dashboard-new")]
@@ -3096,9 +3145,10 @@ string fromDate,
 string toDate,
 int routeId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 if (usqlre.user_role != "ADMIN")
                 {
@@ -3376,8 +3426,6 @@ ORDER BY U.gu_name
 
                 hash.Add("recent_visit", recentVisit);
 
-                usqlre.close();
-
                 string jsonResult =
                 ReportModelContext.searializeDt(hash);
 
@@ -3391,6 +3439,10 @@ ORDER BY U.gu_name
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
@@ -3401,9 +3453,10 @@ ORDER BY U.gu_name
  string routeId,
  string toDate)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 if (usqlre.user_role != "ADMIN")
                 {
@@ -3487,8 +3540,6 @@ ORDER BY A.as_name ASC
 
                 hash.Add("total_shop", totalShop);
 
-                usqlre.close();
-
                 string jsonResult =
                 ReportModelContext.searializeDt(hash);
 
@@ -3502,6 +3553,10 @@ ORDER BY A.as_name ASC
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpGet("salesman-pending-shop-list")]
@@ -3510,9 +3565,10 @@ string salesmanId,
 string toDate,
 string routeId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 if (usqlre.user_role != "ADMIN")
                 {
@@ -3654,8 +3710,6 @@ ORDER BY A.as_name ASC
 
                 hash.Add("pending_shop", pendingShop);
 
-                usqlre.close();
-
                 string jsonResult =
                 ReportModelContext.searializeDt(hash);
 
@@ -3669,6 +3723,10 @@ ORDER BY A.as_name ASC
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
@@ -3678,9 +3736,10 @@ string salesmanId,
 string toDate,
 string routeId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 if (usqlre.user_role != "ADMIN")
                 {
@@ -3807,8 +3866,6 @@ string routeId)
 
                 hash.Add("shop_covered", coveredShop);
 
-                usqlre.close();
-
                 string jsonResult =
                 ReportModelContext.searializeDt(hash);
 
@@ -3822,6 +3879,10 @@ string routeId)
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
         [HttpGet("salesman-skip-shop-list")]
@@ -3830,9 +3891,10 @@ string salesmanId,
 string toDate,
 string routeId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre = new UserSqlServer(this);
+                usqlre = new UserSqlServer(this);
 
                 if (usqlre.user_role != "ADMIN")
                 {
@@ -3960,8 +4022,6 @@ string routeId)
 
                 hash.Add("skip_shop", skipShop);
 
-                usqlre.close();
-
                 string jsonResult =
                 ReportModelContext.searializeDt(hash);
 
@@ -3975,6 +4035,10 @@ string routeId)
                     message = ex.Message
                 });
             }
+            finally
+            {
+                usqlre?.close();
+            }
         }
 
 
@@ -3985,9 +4049,10 @@ string fromDate,
 string toDate,
 string routeId)
         {
+            UserSqlServer usqlre = null;
             try
             {
-                UserSqlServer usqlre =
+                usqlre =
                 new UserSqlServer(this);
 
                 // ADMIN CHECK
@@ -4191,10 +4256,6 @@ string routeId)
 
 
 
-
-
-                usqlre.close();
-
                 string jsonResult =
                 ReportModelContext.searializeDt(hash);
 
@@ -4209,6 +4270,10 @@ string routeId)
                     status = false,
                     message = ex.Message
                 });
+            }
+            finally
+            {
+                usqlre?.close();
             }
         }
 

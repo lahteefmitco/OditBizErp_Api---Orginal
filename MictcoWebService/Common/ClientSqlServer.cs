@@ -58,7 +58,7 @@ namespace MictcoWebService.Common
                 if (OpenConnection())
                 {
                     cmd1 = new SqlCommand(qry, shop);
-                    cmd1.CommandTimeout = 0;
+                    cmd1.CommandTimeout = 60;
                     cmd1.ExecuteNonQuery();
                 }
             }
@@ -74,7 +74,7 @@ namespace MictcoWebService.Common
             {
                 DataTable _temp = new DataTable();
                 da = new SqlDataAdapter(qry, shop);
-                da.SelectCommand.CommandTimeout = 0;
+                da.SelectCommand.CommandTimeout = 60;
                 da.Fill(_temp);
                 return _temp;
             }
