@@ -44,7 +44,7 @@ namespace MictcoWebService.Controllers
             //connetionString = @"Data Source=192.168.1.95;Initial Catalog=G7;User ID=sa;Password=wf";
             try
             {
-                connetionString = SqlConnectionPool.Apply(@"Data Source=192.168.29.72;Initial Catalog=MOBILE_USER;User ID=sa;Password=9526317685;Encrypt=False");
+                connetionString = SqlConnectionPool.Apply(@"Data Source=192.168.29.72;Initial Catalog=MOBIL_USERS;User ID=sa;Password=9526317685;Encrypt=False");
                 SqlConnection shop = new SqlConnection(connetionString);
                 shop.Open();
 

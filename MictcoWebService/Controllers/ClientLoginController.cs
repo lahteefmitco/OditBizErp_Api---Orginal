@@ -46,6 +46,10 @@ namespace MictcoWebService.Controllers
             {
                 csqlr = new ClientSqlServer();
                 DataTable dt = _context.authLogin(client, csqlr);
+                if (dt == null)
+                {
+                    return Unauthorized(new { status = false, message = "Unable to connect to MOBIL_USERS" });
+                }
                 if (dt.Rows.Count > 0 && client != null)
                 {
                     DataTable tokenDt = new DataTable();
