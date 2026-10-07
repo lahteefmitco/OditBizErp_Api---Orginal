@@ -18,7 +18,7 @@ namespace MictcoWebService.Common
         // public static string username = "sa";
         // public static string password = "wf"; 
 
-
+        // test
 
         public string connetionString;
         public SqlConnection shop;
