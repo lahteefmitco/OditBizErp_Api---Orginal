@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
 
@@ -24,6 +25,14 @@ namespace MictcoWebService.Controllers
     [Authorize(Roles = UserRoles.User)]
     public class ServiceAppController : Controller
     {
+        /// <summary>
+        /// Limits how many get-tickets queries run on SQL Server at the same time.
+        /// Without this, bulk requests pile up hundreds of heavy queries that choke
+        /// SQL Server — and it stays slow even after the burst finishes.
+        /// 10 concurrent is enough to keep the API responsive without overloading DB.
+        /// </summary>
+        private static readonly SemaphoreSlim _ticketQueryThrottle = new SemaphoreSlim(10, 10);
+
         // ---------------------------------------------------
         // INSERT
         // ---------------------------------------------------
@@ -2402,6 +2411,19 @@ namespace MictcoWebService.Controllers
                 DataTable ticketTable;
                 DataTable lendTable;
 
+                // Wait up to 30s for a slot. If the server is overloaded,
+                // fail fast instead of piling more queries onto SQL Server.
+                if (!await _ticketQueryThrottle.WaitAsync(TimeSpan.FromSeconds(30), HttpContext.RequestAborted))
+                {
+                    return StatusCode(503, new
+                    {
+                        status = false,
+                        statusCode = 503,
+                        message = "Server is busy. Please try again shortly.",
+                        data = (object)null
+                    });
+                }
+
                 try
                 {
                 if (!await usqlre.OpenConnectionAsync(HttpContext.RequestAborted))
@@ -2507,6 +2529,7 @@ WHERE s.si_str_id = 12
                 finally
                 {
                     usqlre.ReleaseConnection();
+                    _ticketQueryThrottle.Release();
                 }
 
 
