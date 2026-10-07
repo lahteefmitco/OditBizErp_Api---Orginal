@@ -16,7 +16,7 @@ namespace MictcoWebService.Common
         // public static string server = "DESKTOP-GHPN416\\ANANTHU";
         // public static string database = "MOBIL_USERS";
         // public static string username = "sa";
-        // public static string password = "wf";
+        // public static string password = "wf"; 
 
 
 
