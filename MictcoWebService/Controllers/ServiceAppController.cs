@@ -3529,6 +3529,11 @@ namespace MictcoWebService.Controllers
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                // 500 ms delay; honours the request token so a client abort ends it immediately.
+              //  await Task.Delay(500, cancellationToken);
+
+                Console.WriteLine("GetAllCustomers");
+
                 usqlre = new UserSqlServer(this);
                 if (!await usqlre.OpenConnectionAsync(cancellationToken))
                 {
@@ -3574,11 +3579,13 @@ namespace MictcoWebService.Controllers
             }
             catch (OperationCanceledException)
             {
+                Console.WriteLine("OperationCanceledException client aborted");
                 // Client aborted the request; 499 = Client Closed Request.
                 return StatusCode(499);
             }
             catch (SqlException) when (cancellationToken.IsCancellationRequested)
             {
+                Console.WriteLine("OperationCanceledException requested");
                 // SQL Server reports "Operation cancelled by user" as a SqlException after cmd.Cancel().
                 return StatusCode(499);
             }

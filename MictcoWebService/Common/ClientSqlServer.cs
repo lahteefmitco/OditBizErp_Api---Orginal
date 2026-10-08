@@ -9,14 +9,19 @@ namespace MictcoWebService.Common
 {
     public class ClientSqlServer
     {
-        public static string server = "server.oditbiz.in,2438";
-        public static string database = "MOBIL_USERS";
-        public static string username = "mictco_oditbiz";
-        public static string password = "Mictco@Meizon#Codignus@#MIS6600";
+        // public static string server = "server.oditbiz.in,2438";
+        // public static string database = "MOBIL_USERS";
+        // public static string username = "mictco_oditbiz";
+        // public static string password = "Mictco@Meizon#Codignus@#MIS6600";
         // public static string server = "DESKTOP-GHPN416\\ANANTHU";
         // public static string database = "MOBIL_USERS";
         // public static string username = "sa";
         // public static string password = "wf"; 
+
+        public static string server = "192.168.29.72";
+        public static string database = "MOBIL_USERS";
+        public static string username = "sa";
+        public static string password = "9526317685";
 
         // test
 
