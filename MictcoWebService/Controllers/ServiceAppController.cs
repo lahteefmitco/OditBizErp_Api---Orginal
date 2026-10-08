@@ -3524,28 +3524,63 @@ namespace MictcoWebService.Controllers
         public async Task<IActionResult> GetAllCustomers(string search = "")
         {
             UserSqlServer usqlre = null;
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
-
-                SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@StatementType", "getAllCustomers");
-                cmd.Parameters.AddWithValue("@search", search ?? "");
-
-                DataTable dt = new DataTable();
-                dt.Load(cmd.ExecuteReader());
-
-                var responseObj = new
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
                 {
-                    status = true,
-                    statusCode = 200,
-                    message = "Customer List Fetched Successfully",
-                    data = dt
-                };
-                return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError
+                    });
+                }
+
+                using (SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@StatementType", "getAllCustomers");
+                    cmd.Parameters.AddWithValue("@search", search ?? "");
+
+                    // When the client disconnects, cancel the running SQL command on the server.
+                    // This also covers the synchronous DataTable.Load below, which the token
+                    // passed to ExecuteReaderAsync alone would not interrupt.
+                    using (cancellationToken.Register(() =>
+                    {
+                        try { cmd.Cancel(); } catch { /* command already finished/disposed */ }
+                    }))
+                    {
+                        DataTable dt = new DataTable();
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync(cancellationToken))
+                        {
+                            dt.Load(reader);
+                        }
+
+                        var responseObj = new
+                        {
+                            status = true,
+                            statusCode = 200,
+                            message = "Customer List Fetched Successfully",
+                            data = dt
+                        };
+                        return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Client aborted the request; 499 = Client Closed Request.
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                // SQL Server reports "Operation cancelled by user" as a SqlException after cmd.Cancel().
+                return StatusCode(499);
             }
             catch (Exception ex)
             {
@@ -3558,7 +3593,8 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                // Always return the connection to the pool.
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("search-customer-by-mobile")]
