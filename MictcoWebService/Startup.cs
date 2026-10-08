@@ -33,7 +33,12 @@ namespace MictcoWebService
                        .AllowAnyHeader();
             }));
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new FlexibleNullableDateTimeConverter());
+                    options.JsonSerializerOptions.Converters.Add(new FlexibleDateTimeConverter());
+                });
             // Enable SignalR
             services.AddSignalR();
 

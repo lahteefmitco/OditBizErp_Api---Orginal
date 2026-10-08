@@ -4611,10 +4611,15 @@ namespace MictcoWebService.Controllers
         [HttpPost("insert-delivery")]
         public async Task<IActionResult> InsertDelivery([FromBody] ServiceDeliveryModel model)
         {
-            UserSqlServer usqlre = new UserSqlServer(this);
-            int str_id = model.isTax ? 1 : 14;
-
             if (model == null) return BadRequest(new { status = 0, message = "Invalid payload" });
+
+            UserSqlServer usqlre = null;
+            int str_id = 0;
+            int tres = -6;
+            try
+            {
+            usqlre = new UserSqlServer(this);
+            str_id = model.isTax ? 1 : 14;
             // Items collected string
             string si_items_collected = "";
             if (model.list_itemscollected != null && model.list_itemscollected.Count > 0)
@@ -4869,9 +4874,6 @@ namespace MictcoWebService.Controllers
             }
 
             // Call SP
-            int tres = -6;
-            try
-            {
                 usqlre.OpenConnection();
 
                 using (var cmd = new SqlCommand("Sp_Sale", usqlre.shop))
@@ -4933,11 +4935,17 @@ namespace MictcoWebService.Controllers
 
                     decimal ob = 0;
 
-                    string sqldata = @"SELECT ISNULL(SUM(at_Dr) - SUM(at_Cr), 0) AS ob FROM acc_account_transactions WHERE CAST(at_date AS DATE) <= CAST('" + DateTime.Now + "' AS DATE) AND at_as_id = " + si_acc_id + "";
-                    DataTable dtdata = usqlre.dbReaderFill(sqldata);
-                    if (dtdata != null && dtdata.Rows.Count > 0)
+                    using (SqlCommand obCmd = new SqlCommand(
+                        @"SELECT ISNULL(SUM(at_Dr) - SUM(at_Cr), 0)
+                          FROM acc_account_transactions
+                          WHERE CAST(at_date AS DATE) <= @asOf
+                            AND at_as_id = @as_id", usqlre.shop))
                     {
-                        ob = Convert.ToDecimal(dtdata.Rows[0]["ob"]);
+                        obCmd.Parameters.Add("@asOf", SqlDbType.Date).Value = DateTime.Today;
+                        obCmd.Parameters.Add("@as_id", SqlDbType.Int).Value = si_acc_id;
+                        object obValue = obCmd.ExecuteScalar();
+                        if (obValue != null && obValue != DBNull.Value)
+                            ob = Convert.ToDecimal(obValue);
                     }
 
                     decimal netBalance = ob + model.GrandTotal;
@@ -4946,7 +4954,7 @@ namespace MictcoWebService.Controllers
                     cmd.Parameters.AddWithValue("@si_net_balance", netBalance);
                     cmd.Parameters.AddWithValue("@si_str_id", str_id);
                     cmd.Parameters.AddWithValue("@si_entryno", 0);
-                    cmd.Parameters.AddWithValue("@si_date",model.date);
+                    cmd.Parameters.Add("@si_date", SqlDbType.DateTime).Value = model.date;
                     cmd.Parameters.AddWithValue("@si_acc_id", si_acc_id);
                     cmd.Parameters.AddWithValue("@si_cust_name", model.si_cust_name ?? "");
                     cmd.Parameters.AddWithValue("@si_assign_to", model.si_assign_to);
@@ -4957,8 +4965,8 @@ namespace MictcoWebService.Controllers
                     cmd.Parameters.AddWithValue("@si_company", model.Brand ?? "");
                     cmd.Parameters.AddWithValue("@si_model", model.si_model ?? "");
                     cmd.Parameters.AddWithValue("@si_imei", model.si_imei ?? "");
-                    cmd.Parameters.AddWithValue("@si_expected_date", model.si_expected_date ?? "");
-                    cmd.Parameters.AddWithValue("@si_deliverydate", model.si_deliverydate ?? "");
+                    cmd.Parameters.Add("@si_expected_date", SqlDbType.DateTime).Value = (object?)model.si_expected_date ?? DBNull.Value;
+                    cmd.Parameters.Add("@si_deliverydate", SqlDbType.DateTime).Value = (object?)model.si_deliverydate ?? DBNull.Value;
                     cmd.Parameters.AddWithValue("@si_remarks", model.EstimateCost ?? "");
 
                     cmd.Parameters.AddWithValue("@si_grand_total", model.GrandTotal);
@@ -5055,6 +5063,7 @@ namespace MictcoWebService.Controllers
             }
             catch (SqlException sqlEx)
             {
+                Console.WriteLine($"SQL Exception: {sqlEx.Message}");
                 return StatusCode(422, new
                 {
                     status = false,
@@ -5065,6 +5074,8 @@ namespace MictcoWebService.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Exception: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.Data}");
                 return StatusCode(500, new
                 {
                     status = false,
@@ -5094,11 +5105,15 @@ namespace MictcoWebService.Controllers
         [HttpPost("update-delivery")]
         public async Task<IActionResult> UpdateDelivery([FromBody] ServiceDeliveryModel model)
         {
-            UserSqlServer usqlre = new UserSqlServer(this);
-
-
             if (model == null) return BadRequest(new { status = 0, message = "Invalid payload" });
-            int str_id = model.isTax ? 1 : 14;
+
+            UserSqlServer usqlre = null;
+            int str_id = 0;
+            int tres = -6;
+            try
+            {
+            usqlre = new UserSqlServer(this);
+            str_id = model.isTax ? 1 : 14;
 
             if (model.delivery_entryno <= 0)
             {
@@ -5362,9 +5377,6 @@ namespace MictcoWebService.Controllers
             }
 
             // Call SP
-            int tres = -6;
-            try
-            {
                 usqlre.OpenConnection();
 
                 using (var cmd = new SqlCommand("Sp_Sale", usqlre.shop))
@@ -5426,11 +5438,17 @@ namespace MictcoWebService.Controllers
 
                     decimal ob = 0;
 
-                    string sqldata = @"SELECT ISNULL(SUM(at_Dr) - SUM(at_Cr), 0) AS ob FROM acc_account_transactions WHERE CAST(at_date AS DATE) <= CAST('" + DateTime.Now + "' AS DATE) AND at_as_id = " + si_acc_id + "";
-                    DataTable dtdata = usqlre.dbReaderFill(sqldata);
-                    if (dtdata != null && dtdata.Rows.Count > 0)
+                    using (SqlCommand obCmd = new SqlCommand(
+                        @"SELECT ISNULL(SUM(at_Dr) - SUM(at_Cr), 0)
+                          FROM acc_account_transactions
+                          WHERE CAST(at_date AS DATE) <= @asOf
+                            AND at_as_id = @as_id", usqlre.shop))
                     {
-                        ob = Convert.ToDecimal(dtdata.Rows[0]["ob"]);
+                        obCmd.Parameters.Add("@asOf", SqlDbType.Date).Value = DateTime.Today;
+                        obCmd.Parameters.Add("@as_id", SqlDbType.Int).Value = si_acc_id;
+                        object obValue = obCmd.ExecuteScalar();
+                        if (obValue != null && obValue != DBNull.Value)
+                            ob = Convert.ToDecimal(obValue);
                     }
 
                     decimal netBalance = ob + model.GrandTotal;
@@ -5450,8 +5468,8 @@ namespace MictcoWebService.Controllers
                     cmd.Parameters.AddWithValue("@si_company", model.Brand ?? "");
                     cmd.Parameters.AddWithValue("@si_model", model.si_model ?? "");
                     cmd.Parameters.AddWithValue("@si_imei", model.si_imei ?? "");
-                    cmd.Parameters.AddWithValue("@si_expected_date", model.si_expected_date ?? "");
-                    cmd.Parameters.AddWithValue("@si_deliverydate", model.si_deliverydate ?? "");
+                    cmd.Parameters.Add("@si_expected_date", SqlDbType.DateTime).Value = (object?)model.si_expected_date ?? DBNull.Value;
+                    cmd.Parameters.Add("@si_deliverydate", SqlDbType.DateTime).Value = (object?)model.si_deliverydate ?? DBNull.Value;
                     cmd.Parameters.AddWithValue("@si_remarks", model.EstimateCost ?? "");
 
                     cmd.Parameters.AddWithValue("@si_grand_total", model.GrandTotal);
@@ -6691,6 +6709,7 @@ namespace MictcoWebService.Controllers
             }
             catch (SqlException sqlEx)
             {
+                Console.WriteLine("SQL Exception: " + sqlEx.Message);
                 return StatusCode(422, new
                 {
                     status = false,
@@ -6701,6 +6720,7 @@ namespace MictcoWebService.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("General Exception: " + ex.Message);
                 return StatusCode(500, new
                 {
                     status = false,

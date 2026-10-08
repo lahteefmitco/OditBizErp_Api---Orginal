@@ -91,13 +91,13 @@ namespace MictcoWebService.Models
 
         public string si_cust_name { get; set; }
         public int si_assign_to { get; set; }
-        public string date { get; set; }
+        public DateTime date { get; set; }
         public string Brand { get; set; }
         public string si_model { get; set; }
         public string si_imei { get; set; }
         public string BatteryNo { get; set; }
-        public string si_deliverydate { get; set; }
-        public string si_expected_date { get; set; }
+        public DateTime? si_deliverydate { get; set; }
+        public DateTime? si_expected_date { get; set; }
         public string EstimateCost { get; set; }
         public int? CashPaidAccount { get; set; }          // si_cash_paid_acc
         public decimal? CashAmount { get; set; }         // si_cash_recieved
