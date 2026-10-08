@@ -3529,9 +3529,6 @@ namespace MictcoWebService.Controllers
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                // 500 ms delay; honours the request token so a client abort ends it immediately.
-              //  await Task.Delay(500, cancellationToken);
-
                 Console.WriteLine("GetAllCustomers");
 
                 usqlre = new UserSqlServer(this);
