@@ -79,6 +79,16 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
                 return Content(json, "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -141,6 +151,16 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
                 return Content(json, "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -191,6 +211,16 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
                 return Content(json, "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -213,6 +243,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-service-complaint")]
         public async Task<IActionResult> GetAllServiceComplaint()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -234,6 +265,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(json, "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -251,6 +300,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-service-complaint-by-id/{id}")]
         public async Task<IActionResult> GetAllComplaintsById(int id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -273,6 +323,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(json, "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -290,6 +358,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-service-complaint-by-mobile/{mobile}")]
         public async Task<IActionResult> GetAllComplaintsByMob(string mobile)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -312,6 +381,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(json, "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -329,6 +416,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-service-category")]
         public async Task<IActionResult> GetAllServiceCategory()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -349,6 +437,24 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
 
                 return Content(json, "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -384,6 +490,16 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
                 return Content(json, "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -400,6 +516,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-service-brand")]
         public async Task<IActionResult> GetAllServiceBrand()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -420,6 +537,24 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
 
                 return Content(json, "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -455,6 +590,16 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
                 return Content(json, "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -471,6 +616,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-service-route")]
         public async Task<IActionResult> GetAllServiceRoute()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -491,6 +637,24 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
 
                 return Content(json, "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -526,6 +690,16 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
                 return Content(json, "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -541,6 +715,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-service-color")]
         public async Task<IActionResult> GetAllServiceColor()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -557,6 +732,24 @@ namespace MictcoWebService.Controllers
 
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
                 return Content(json, "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -593,6 +786,16 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
                 return Content(json, "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -608,6 +811,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-service-model")]
         public async Task<IActionResult> GetAllServiceModel(int model_company_id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -630,6 +834,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(json, "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -644,6 +866,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-service-cash")]
         public async Task<IActionResult> GetAllServiceCash()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -665,6 +888,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(json, "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -679,6 +920,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-service-card")]
         public async Task<IActionResult> GetAllServiceCard()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -699,6 +941,24 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
 
                 return Content(json, "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -805,6 +1065,16 @@ namespace MictcoWebService.Controllers
                     data = entryNo
                 });
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -884,6 +1154,16 @@ namespace MictcoWebService.Controllers
                     statusCode = 200,
                     message = "Ticket updated successfully",
                     data = ticketId
+                });
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
                 });
             }
             catch (Exception ex)
@@ -1003,6 +1283,16 @@ namespace MictcoWebService.Controllers
                     message = "Image removed successfully"
                 });
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -1017,13 +1307,24 @@ namespace MictcoWebService.Controllers
             }
         }
         [HttpGet("get-ticket-by-id/{ticketId}")]
-        public IActionResult GetTicketById(int ticketId)
+        public async Task<IActionResult> GetTicketById(int ticketId)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -1031,12 +1332,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@StatementType", "GetTicketById");
                 cmd.Parameters.AddWithValue("@si_entryno", ticketId);
 
-                DataSet ds = new DataSet();
-
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(ds);
-                }
+                DataSet ds = await LoadDataSetAsync(cmd, cancellationToken);
 
 
                 if (ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
@@ -1071,6 +1367,24 @@ namespace MictcoWebService.Controllers
                 };
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -1082,7 +1396,7 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
 
@@ -1601,6 +1915,16 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
                 return Content(json, "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -1655,6 +1979,16 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
                 return Content(json, "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -1704,6 +2038,16 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
                 return Content(json, "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -1726,6 +2070,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-qc-list")]
         public async Task<IActionResult> GetAllQcList()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -1747,6 +2092,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(json, "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -1765,6 +2128,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-qc-list-by-id/{id}")]
         public async Task<IActionResult> GetAllQcListById(int id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -1786,6 +2150,24 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
 
                 return Content(json, "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -1833,6 +2215,16 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -1885,6 +2277,16 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -1933,6 +2335,16 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -1954,6 +2366,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-items-collected")]
         public async Task<IActionResult> GetItemsCollected()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -1970,6 +2383,24 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -1988,6 +2419,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-items-collected-by-id/{id}")]
         public async Task<IActionResult> GetItemsCollectedById(int id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -2006,6 +2438,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -2020,6 +2470,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("description-list")]
         public async Task<IActionResult> DescriptionList()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -2036,6 +2487,24 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -2082,6 +2551,16 @@ namespace MictcoWebService.Controllers
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(responseObj);
                 return Content(json, "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -2101,6 +2580,7 @@ namespace MictcoWebService.Controllers
         [HttpGet("technicians")]
         public async Task<IActionResult> GetAllTechnician()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -2117,6 +2597,24 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -2162,6 +2660,16 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -2211,6 +2719,16 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -2292,6 +2810,16 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -2310,11 +2838,22 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-generalRemarks")]
         public async Task<IActionResult> GetgeneralRemarks(int ticket_id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -2322,11 +2861,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@StatementType", "GetGeneralRemarks");
                 cmd.Parameters.AddWithValue("@si_entryno", ticket_id);
 
-                DataTable dt = new DataTable();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(dt);
-                }
+                DataTable dt = await LoadTableAsync(cmd, cancellationToken);
                 var responseObj = new
                 {
                     status = true,
@@ -2336,6 +2871,24 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -2349,7 +2902,7 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpPost("relocate-technician")]
@@ -2386,6 +2939,16 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -2405,6 +2968,7 @@ namespace MictcoWebService.Controllers
         public async Task<IActionResult> GetTickets(
            [FromQuery] TicketFiltrationModel model)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 UserSqlServer usqlre = new UserSqlServer(this);
@@ -2514,16 +3078,14 @@ namespace MictcoWebService.Controllers
                 {
                     cmd.CommandTimeout = 60;
                     AddTicketFilters(cmd, model);
-                    using SqlDataReader reader = await cmd.ExecuteReaderAsync(HttpContext.RequestAborted);
-                    ticketTable.Load(reader);
+                    ticketTable = await LoadTableAsync(cmd, cancellationToken);
                 }
 
                 using (SqlCommand cmd = new SqlCommand(lendSql, usqlre.shop))
                 {
                     cmd.CommandTimeout = 60;
                     AddTicketFilters(cmd, model);
-                    using SqlDataReader reader = await cmd.ExecuteReaderAsync(HttpContext.RequestAborted);
-                    lendTable.Load(reader);
+                    lendTable = await LoadTableAsync(cmd, cancellationToken);
                 }
                 }
                 finally
@@ -2672,6 +3234,24 @@ namespace MictcoWebService.Controllers
                     Newtonsoft.Json.JsonConvert.SerializeObject(responseObj),
                     "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -2693,13 +3273,14 @@ namespace MictcoWebService.Controllers
             CommandType commandType,
             params SqlParameter[] parameters)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = new UserSqlServer(this, validateUser: false);
             string connectionString = usqlre.getConnectionString();
             if (string.IsNullOrWhiteSpace(connectionString))
                 throw new InvalidOperationException("Database connection string is missing.");
 
             using SqlConnection conn = new SqlConnection(connectionString);
-            await conn.OpenAsync(HttpContext.RequestAborted);
+            await conn.OpenAsync(cancellationToken);
 
             using SqlCommand cmd = new SqlCommand(commandText, conn)
             {
@@ -2712,12 +3293,48 @@ namespace MictcoWebService.Controllers
                     cmd.Parameters.Add(parameter);
             }
 
-            DataTable table = new DataTable();
-            using (SqlDataReader reader = await cmd.ExecuteReaderAsync(HttpContext.RequestAborted))
+            return await LoadTableAsync(cmd, cancellationToken);
+        }
+
+        /// <summary>
+        /// Executes the command and loads the first result set.
+        /// Cancels the SQL command if the request token fires, including during the synchronous load.
+        /// </summary>
+        private static async Task<DataTable> LoadTableAsync(SqlCommand cmd, CancellationToken cancellationToken)
+        {
+            using (cancellationToken.Register(() =>
             {
+                try { cmd.Cancel(); } catch { }
+            }))
+            using (SqlDataReader reader = await cmd.ExecuteReaderAsync(cancellationToken))
+            {
+                DataTable table = new DataTable();
                 table.Load(reader);
+                return table;
             }
-            return table;
+        }
+
+        /// <summary>
+        /// Executes the command and loads every result set.
+        /// DataTable.Load advances the reader, so the loop stops when the reader is closed.
+        /// </summary>
+        private static async Task<DataSet> LoadDataSetAsync(SqlCommand cmd, CancellationToken cancellationToken)
+        {
+            using (cancellationToken.Register(() =>
+            {
+                try { cmd.Cancel(); } catch { }
+            }))
+            using (SqlDataReader reader = await cmd.ExecuteReaderAsync(cancellationToken))
+            {
+                DataSet dataSet = new DataSet();
+                while (!reader.IsClosed)
+                {
+                    DataTable table = new DataTable();
+                    table.Load(reader);
+                    dataSet.Tables.Add(table);
+                }
+                return dataSet;
+            }
         }
 
         private static void AddTicketFilters(SqlCommand cmd, TicketFiltrationModel model)
@@ -2741,11 +3358,22 @@ namespace MictcoWebService.Controllers
         [HttpGet("get-tickets-by-id")]
         public async Task<IActionResult> GetTicketsById(int Id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -2753,11 +3381,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@StatementType", "getTicketsById");
                 cmd.Parameters.AddWithValue("@si_entryno", Id); // ✅ FIXED
 
-                DataSet ds = new DataSet();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(ds);
-                }
+                DataSet ds = await LoadDataSetAsync(cmd, cancellationToken);
                 object ticket = null;
 
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
@@ -2786,6 +3410,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -2797,13 +3439,14 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
 
         [HttpGet("technician-list")]
         public async Task<IActionResult> TechnicianList()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -2821,6 +3464,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -2836,11 +3497,22 @@ namespace MictcoWebService.Controllers
         [HttpGet("technician-dashboard")]
         public async Task<IActionResult> GetTechnicianDashboard(int id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -2848,11 +3520,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@StatementType", "getTechnicianDashboardDetailed");
                 cmd.Parameters.AddWithValue("@si_entryno", id); // ✅ FIXED
 
-                DataSet ds = new DataSet();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(ds);
-                }
+                DataSet ds = await LoadDataSetAsync(cmd, cancellationToken);
                 object ticket = null;
 
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
@@ -2881,6 +3549,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -2893,7 +3579,7 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpPost("insert-spare")]
@@ -2936,6 +3622,16 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -2977,6 +3673,16 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -3034,6 +3740,16 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -3076,6 +3792,16 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -3121,6 +3847,16 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -3139,19 +3875,29 @@ namespace MictcoWebService.Controllers
         [HttpGet("spare-list")]
         public async Task<IActionResult> SpareList(string? searchKey)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ir_name", (object)searchKey ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@StatementType", "spareList");
 
-                DataTable dt = new DataTable();
-                dt.Load(cmd.ExecuteReader());
+                DataTable dt = await LoadTableAsync(cmd, cancellationToken);
 
                 var responseObj = new
                 {
@@ -3162,6 +3908,24 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -3175,18 +3939,29 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
 
         [HttpGet("spare-request-list")]
         public async Task<IActionResult> SpareRequestList()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -3194,11 +3969,7 @@ namespace MictcoWebService.Controllers
 
                 //DataTable dt = new DataTable();
                 //dt.Load(cmd.ExecuteReader());
-                DataSet ds = new DataSet();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(ds);
-                }
+                DataSet ds = await LoadDataSetAsync(cmd, cancellationToken);
 
                 var spareList = new List<object>();
 
@@ -3253,6 +4024,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -3265,25 +4054,35 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
 
         [HttpGet("spare-reject-list")]
         public async Task<IActionResult> SpareRejectList()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@StatementType", "spare-reject-list");
 
-                DataTable dt = new DataTable();
-                dt.Load(cmd.ExecuteReader());
+                DataTable dt = await LoadTableAsync(cmd, cancellationToken);
 
                 var responseObj = new
                 {
@@ -3294,6 +4093,24 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -3307,25 +4124,35 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("spare-detailed")]
         public async Task<IActionResult> SpareDetailed(int ir_id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 SqlCommand cmd = new SqlCommand("Sp_Stock", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@StatementType", "RS_select");
                 cmd.Parameters.AddWithValue("@ir_id", ir_id);
 
-                DataTable dt = new DataTable();
-                dt.Load(cmd.ExecuteReader());
+                DataTable dt = await LoadTableAsync(cmd, cancellationToken);
 
                 var responseObj = new
                 {
@@ -3336,6 +4163,24 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -3349,25 +4194,35 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("spare-parts-history")]
         public async Task<IActionResult> SparePartsHistory(int? ir_id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@StatementType", "sparePartsHistory");
                 cmd.Parameters.AddWithValue("@ir_id", ir_id);
 
-                DataTable dt = new DataTable();
-                dt.Load(cmd.ExecuteReader());
+                DataTable dt = await LoadTableAsync(cmd, cancellationToken);
 
                 var responseObj = new
                 {
@@ -3378,6 +4233,24 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -3391,17 +4264,28 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("get-spare-detailed")]
         public async Task<IActionResult> GetSpareDetailed(int Id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -3409,11 +4293,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@StatementType", "spare-detailed");
                 cmd.Parameters.AddWithValue("@si_entryno", Id); // ✅ FIXED
 
-                DataSet ds = new DataSet();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(ds);
-                }
+                DataSet ds = await LoadDataSetAsync(cmd, cancellationToken);
                 object ticket = null;
 
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
@@ -3456,6 +4336,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -3467,26 +4365,35 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("technician-dashboard-detailed")]
         public async Task<IActionResult> GetTechnicianDashboardDetailed(int as_id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@as_id", as_id);
                 cmd.Parameters.AddWithValue("@StatementType", "getTechnicianDashboardDetailed");
 
-                DataSet ds = new DataSet();
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                da.Fill(ds);
+                DataSet ds = await LoadDataSetAsync(cmd, cancellationToken);
 
                 var responseObj = new
                 {
@@ -3503,6 +4410,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 var responseObj = new
@@ -3517,7 +4442,7 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("get-all-customers")]
@@ -3586,6 +4511,16 @@ namespace MictcoWebService.Controllers
                 // SQL Server reports "Operation cancelled by user" as a SqlException after cmd.Cancel().
                 return StatusCode(499);
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -3604,11 +4539,22 @@ namespace MictcoWebService.Controllers
         [HttpGet("search-customer-by-mobile")]
         public async Task<IActionResult> SearchCustomerByMobile(string mobile = "")
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -3616,8 +4562,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@StatementType", "SearchCustomerByMobile");
                 cmd.Parameters.AddWithValue("@search", mobile ?? "");
 
-                DataTable dt = new DataTable();
-                dt.Load(cmd.ExecuteReader());
+                DataTable dt = await LoadTableAsync(cmd, cancellationToken);
 
                 var responseObj = new
                 {
@@ -3627,6 +4572,24 @@ namespace MictcoWebService.Controllers
                     data = dt
                 };
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -3639,7 +4602,7 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         // ---------------------------------------------------
@@ -4089,6 +5052,16 @@ namespace MictcoWebService.Controllers
                         }
                     }
                 }
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -4576,6 +5549,16 @@ namespace MictcoWebService.Controllers
                     }
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -4655,6 +5638,16 @@ namespace MictcoWebService.Controllers
                 };
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -4671,13 +5664,24 @@ namespace MictcoWebService.Controllers
             }
         }
         [HttpGet("get-qc-by-ticket-id/{ticketId}")]
-        public IActionResult GetQCByTicketId(int ticketId)
+        public async Task<IActionResult> GetQCByTicketId(int ticketId)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -4685,12 +5689,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@StatementType", "GetQCByTicketId");
                 cmd.Parameters.AddWithValue("@si_entryno", ticketId);
 
-                DataSet ds = new DataSet();
-
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(ds);
-                }
+                DataSet ds = await LoadDataSetAsync(cmd, cancellationToken);
 
 
                 if (ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
@@ -4727,6 +5726,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -4739,28 +5756,35 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("qc-completed-list")]
         public async Task<IActionResult> QcCompletedList()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("@StatementType", "QCCompletedList");
 
-                DataTable dt = new DataTable();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(dt);
-                }
+                DataTable dt = await LoadTableAsync(cmd, cancellationToken);
 
                 var responseObj = new
                 {
@@ -4771,6 +5795,24 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -4784,28 +5826,35 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("get-completed-list-detailed")]
         public async Task<IActionResult> GetQCCompletedListDetailed(int Id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("@StatementType", "QCCompletedListDetailed");
                 cmd.Parameters.AddWithValue("@si_entryno", Id);
-                DataSet ds = new DataSet();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(ds);
-                }
+                DataSet ds = await LoadDataSetAsync(cmd, cancellationToken);
                 object ticket = null;
 
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
@@ -4835,6 +5884,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -4846,28 +5913,35 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("delivery-list")]
         public async Task<IActionResult> DeliveryList()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("@StatementType", "DeliveryList");
 
-                DataTable dt = new DataTable();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(dt);
-                }
+                DataTable dt = await LoadTableAsync(cmd, cancellationToken);
 
                 var responseObj = new
                 {
@@ -4878,6 +5952,24 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -4891,17 +5983,28 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("completed-works")]
         public async Task<IActionResult> GetCompletedWorks(DateTime? fromDate, DateTime? toDate, string search = "")
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -4911,11 +6014,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@to_date", (object?)toDate ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@search", search ?? "");
 
-                DataTable dt = new DataTable();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(dt);
-                }
+                DataTable dt = await LoadTableAsync(cmd, cancellationToken);
                 var responseObj = new
                 {
                     status = true,
@@ -4925,6 +6024,24 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -4937,17 +6054,28 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("completed_works-detailed")]
         public async Task<IActionResult> GetCompletedWorksDetailed(int id, int si_str_id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -4956,11 +6084,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@si_entryno", id);
                 cmd.Parameters.AddWithValue("@si_str_id", si_str_id);
 
-                DataSet ds = new DataSet();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(ds);
-                }
+                DataSet ds = await LoadDataSetAsync(cmd, cancellationToken);
                 object ticket = null;
 
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
@@ -4989,6 +6113,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -5001,7 +6143,7 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpPost("service-return")]
@@ -5039,6 +6181,16 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -5055,13 +6207,24 @@ namespace MictcoWebService.Controllers
             }
         }
         [HttpGet("get-delivery-by-id/{deliveryId}")]
-        public IActionResult GetDeliveryById(int deliveryId, int si_str_id)
+        public async Task<IActionResult> GetDeliveryById(int deliveryId, int si_str_id)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -5070,12 +6233,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@si_entryno", deliveryId);
                 cmd.Parameters.AddWithValue("@si_str_id", si_str_id);
 
-                DataSet ds = new DataSet();
-
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(ds);
-                }
+                DataSet ds = await LoadDataSetAsync(cmd, cancellationToken);
 
 
                 if (ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
@@ -5111,6 +6269,24 @@ namespace MictcoWebService.Controllers
                 };
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -5122,7 +6298,7 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpPost("search-customer-tickets-inf")]
@@ -5168,6 +6344,16 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -5184,13 +6370,24 @@ namespace MictcoWebService.Controllers
             }
         }
         [HttpGet("search-customer-tickets")]
-        public IActionResult SearchCustomerTickets(string search)
+        public async Task<IActionResult> SearchCustomerTickets(string search)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -5198,11 +6395,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@StatementType", "searchCustomerTickets");
                 cmd.Parameters.AddWithValue("@search", search); // ✅ FIXED
 
-                DataSet ds = new DataSet();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(ds);
-                }
+                DataSet ds = await LoadDataSetAsync(cmd, cancellationToken);
                 object ticket = null;
 
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
@@ -5248,6 +6441,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -5260,28 +6471,35 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("get-all-users")]
-        public IActionResult GetAllUsers()
+        public async Task<IActionResult> GetAllUsers()
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 using SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("@StatementType", "GetAllUsers");
 
-                DataTable dt = new DataTable();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(dt);
-                }
+                DataTable dt = await LoadTableAsync(cmd, cancellationToken);
 
 
                 var responseObj = new
@@ -5294,6 +6512,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -5306,12 +6542,13 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
         [HttpGet("get-service-item")]
         public async Task<IActionResult> GetServiceItem(string? searchKey)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             try
             {
                 DataTable dt = await ReadServiceTableAsync(
@@ -5329,6 +6566,24 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -5372,6 +6627,16 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -5424,6 +6689,16 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -5474,6 +6749,16 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -5553,6 +6838,16 @@ namespace MictcoWebService.Controllers
                 };
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -5800,6 +7095,16 @@ namespace MictcoWebService.Controllers
                     }
                 });
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -5979,6 +7284,16 @@ namespace MictcoWebService.Controllers
                     failed = failedList
                 });
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -5996,13 +7311,24 @@ namespace MictcoWebService.Controllers
         }
 
         [HttpGet("service-collection-report")]
-        public IActionResult ServiceCollectionReport(DateTime fromDate, DateTime toDate, int led_id = 0, int loc_id = 0, int rout_id = 0, string billNo = "")
+        public async Task<IActionResult> ServiceCollectionReport(DateTime fromDate, DateTime toDate, int led_id = 0, int loc_id = 0, int rout_id = 0, string billNo = "")
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = new UserSqlServer(this);
 
             try
             {
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 string reportSql = @"
 
@@ -6057,11 +7383,7 @@ namespace MictcoWebService.Controllers
                     cmd.Parameters.AddWithValue("@loc_id", loc_id);
                     cmd.Parameters.AddWithValue("@rout_id", rout_id);
                     cmd.Parameters.AddWithValue("@billNo", billNo?.Trim() ?? "");
-                    dt = new DataTable();
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
-                    {
-                        adapter.Fill(dt);
-                    }
+                    dt = await LoadTableAsync(cmd, cancellationToken);
                 }
                 var collections = new List<object>();
                 decimal totalReceived = 0;
@@ -6090,13 +7412,23 @@ namespace MictcoWebService.Controllers
 
                 if (led_id > 0)
                 {
-                    DataTable dtCustomer = usqlre.dbReaderFill("SELECT as_name FROM acc_subhead WHERE as_id=" + led_id);
+                    DataTable dtCustomer;
+                    using (SqlCommand nameCmd = new SqlCommand("SELECT as_name FROM acc_subhead WHERE as_id = @as_id", usqlre.shop))
+                    {
+                        nameCmd.Parameters.AddWithValue("@as_id", led_id);
+                        dtCustomer = await LoadTableAsync(nameCmd, cancellationToken);
+                    }
                     if (dtCustomer.Rows.Count > 0)
                         customerName = dtCustomer.Rows[0]["as_name"].ToString();
                 }
                 if (rout_id > 0)
                 {
-                    DataTable dtRoute = usqlre.dbReaderFill("SELECT r_name FROM inv_rout_reg WHERE r_id=" + rout_id);
+                    DataTable dtRoute;
+                    using (SqlCommand nameCmd = new SqlCommand("SELECT r_name FROM inv_rout_reg WHERE r_id = @r_id", usqlre.shop))
+                    {
+                        nameCmd.Parameters.AddWithValue("@r_id", rout_id);
+                        dtRoute = await LoadTableAsync(nameCmd, cancellationToken);
+                    }
                     if (dtRoute.Rows.Count > 0)
                         routeName = dtRoute.Rows[0]["r_name"].ToString();
                 }
@@ -6106,7 +7438,12 @@ namespace MictcoWebService.Controllers
                 }
                 if (loc_id > 0)
                 {
-                    DataTable dtBranch = usqlre.dbReaderFill("SELECT gl_name FROM gnl_location WHERE gl_id=" + loc_id);
+                    DataTable dtBranch;
+                    using (SqlCommand nameCmd = new SqlCommand("SELECT gl_name FROM gnl_location WHERE gl_id = @gl_id", usqlre.shop))
+                    {
+                        nameCmd.Parameters.AddWithValue("@gl_id", loc_id);
+                        dtBranch = await LoadTableAsync(nameCmd, cancellationToken);
+                    }
                     if (dtBranch.Rows.Count > 0)
                         branchName = dtBranch.Rows[0]["gl_name"].ToString();
                 }
@@ -6131,9 +7468,27 @@ namespace MictcoWebService.Controllers
                     collections
                 });
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
-                return Ok(new
+                return StatusCode(500, new
                 {
                     status = false,
                     message = ex.Message
@@ -6142,18 +7497,30 @@ namespace MictcoWebService.Controllers
             finally
             {
                 if (usqlre != null)
-                    usqlre.close();
+                    usqlre.ReleaseConnection();
             }
         }
 
         [HttpGet("service-outstanding-report")]
-        public IActionResult ServiceOutstandingReport(DateTime fromDate, DateTime toDate, int led_id = 0, int loc_id = 0, int route_id = 0, bool pendingOnly = false)
+        public async Task<IActionResult> ServiceOutstandingReport(DateTime fromDate, DateTime toDate, int led_id = 0, int loc_id = 0, int route_id = 0, bool pendingOnly = false)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
 
             try
             {
                 usqlre = new UserSqlServer(this);
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 SqlCommand cmd = new SqlCommand("Sp_Service_Complaint_App", usqlre.shop);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -6167,9 +7534,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@groupwhere", "");
                 cmd.Parameters.AddWithValue("@StatementType", "service-outstanding-report");
 
-                SqlDataAdapter adp = new SqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                adp.Fill(ds);
+                DataSet ds = await LoadDataSetAsync(cmd, cancellationToken);
 
                 var workorderList = new List<object>();
 
@@ -6233,18 +7598,33 @@ namespace MictcoWebService.Controllers
                     workorder = workorderList
                 });
             }
-            catch (Exception ex)
+            catch (OperationCanceledException)
             {
-                return Ok(new
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
                 {
                     status = false,
-                    message = ex.Message
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
                 });
             }
-            finally
+            catch (Exception ex)
             {
-                if (usqlre != null)
-                    usqlre.close();
+                return StatusCode(500, new
+                {
+                    status = false,
+                    statusCode = 500,
+                    message = ex.Message,
+                    data = (object)null
+                });
             }
         }
         [HttpPost("technician-loss-report")]
@@ -6283,6 +7663,16 @@ namespace MictcoWebService.Controllers
                     "application/json"
                 );
 
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
             }
             catch (Exception ex)
             {
@@ -6397,6 +7787,16 @@ namespace MictcoWebService.Controllers
                     data = report
                 });
             }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return Ok(new
@@ -6417,11 +7817,22 @@ namespace MictcoWebService.Controllers
         [HttpGet("service-complaint-dashboard")]
         public async Task<IActionResult> GetServiceComplaintDashboard(DateTime? fromDate, DateTime? toDate, int? locationId)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 DateTime today = DateTime.Today;
                 int daysFromMonday = ((int)today.DayOfWeek + 6) % 7;
@@ -6439,11 +7850,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@to_date", filterTo);
                 cmd.Parameters.AddWithValue("@si_location_id", locId);
 
-                DataTable dt = new DataTable();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(dt);
-                }
+                DataTable dt = await LoadTableAsync(cmd, cancellationToken);
 
                 int unassigned = 0, assigned = 0, inProgress = 0, hold = 0, notOk = 0;
                 int awaitingQc = 0, qcRejected = 0, readyForDelivery = 0, deliveredToday = 0;
@@ -6489,6 +7896,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -6501,18 +7926,29 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
 
         [HttpGet("collections-loss-dashboard")]
         public async Task<IActionResult> GetCollectionsLossDashboard(DateTime? fromDate, DateTime? toDate, int? locationId)
         {
+            var cancellationToken = HttpContext.RequestAborted;
             UserSqlServer usqlre = null;
             try
             {
                 usqlre = new UserSqlServer(this);
-                usqlre.OpenConnection();
+                if (!await usqlre.OpenConnectionAsync(cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return StatusCode(500, new
+                    {
+                        status = false,
+                        statusCode = 500,
+                        message = "Database connection failed: " + usqlre.lastError,
+                        data = (object)null
+                    });
+                }
 
                 DateTime filterFrom = fromDate?.Date ?? DateTime.Today;
                 DateTime filterTo = toDate?.Date ?? DateTime.Today;
@@ -6525,11 +7961,7 @@ namespace MictcoWebService.Controllers
                 cmd.Parameters.AddWithValue("@to_date", filterTo);
                 cmd.Parameters.AddWithValue("@si_location_id", locId);
 
-                DataTable dt = new DataTable();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(dt);
-                }
+                DataTable dt = await LoadTableAsync(cmd, cancellationToken);
 
                 decimal invoicedAmount = 0, collectedAmount = 0, outstandingAmount = 0, technicianLoss = 0;
                 string locationName = "";
@@ -6564,6 +7996,24 @@ namespace MictcoWebService.Controllers
 
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(responseObj), "application/json");
             }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException) when (cancellationToken.IsCancellationRequested)
+            {
+                return StatusCode(499);
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(422, new
+                {
+                    status = false,
+                    statusCode = 422,
+                    message = sqlEx.Message,
+                    data = (object)null
+                });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new
@@ -6576,7 +8026,7 @@ namespace MictcoWebService.Controllers
             }
             finally
             {
-                usqlre?.close();
+                usqlre?.ReleaseConnection();
             }
         }
     }
