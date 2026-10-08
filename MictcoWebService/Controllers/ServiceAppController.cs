@@ -2438,74 +2438,74 @@ namespace MictcoWebService.Controllers
                 }
 
                 const string ticketSql = @"
-SELECT
-    s.si_entryno,
-    s.si_date AS TicketDate,
-    s.si_cust_name,
-    c.scr_mobile_no,
-    s.si_company,
-    s.si_model,
-    s.si_assign_to,
-    s.si_remarks AS EstimateCost,
-    s.si_deliverydate,
-    s.si_finish,
-    t.as_name AS Technician,
-    ass.AssignedDate,
-    s.si_return_entryno,
-    s.si_color,
-    clr.clr_name
-FROM inv_sales_inf s
-LEFT JOIN acc_subhead t ON t.as_id = s.si_assign_to
-LEFT JOIN inv_service_complaint_reg c ON c.scr_id = s.si_coupon_no
-LEFT JOIN inv_color clr ON clr.clr_id = s.si_color
-OUTER APPLY (
-    SELECT MAX(h.ssh_changed_date) AS AssignedDate
-    FROM inv_service_status_history h
-    WHERE h.ssh_ticket_id = s.si_entryno
-      AND h.ssh_status IN (N'Assigned', N'Relocate')
-) ass
-WHERE s.si_str_id = 12
-  AND ISNULL(s.si_coupon_no, 0) <> 0
-  AND (
-        (ISNULL(@si_other_remarks, N'') = N'' AND s.si_finish IN (N'Unassigned', N'Relocate'))
-        OR (ISNULL(@si_other_remarks, N'') <> N'' AND s.si_finish = @si_other_remarks)
-      )
-  AND (@from_date IS NULL OR s.si_date >= @from_date)
-  AND (@to_date IS NULL OR s.si_date < DATEADD(DAY, 1, @to_date))
-  AND (@si_entryno IS NULL OR s.si_entryno = @si_entryno)
-  AND (@si_acc_id IS NULL OR s.si_acc_id = @si_acc_id)
-  AND (@si_assign_to IS NULL OR s.si_assign_to = @si_assign_to)
-  AND (@rout_id IS NULL OR c.scr_rout_id = @rout_id)
-ORDER BY s.si_entryno DESC";
+                        SELECT
+                            s.si_entryno,
+                            s.si_date AS TicketDate,
+                            s.si_cust_name,
+                            c.scr_mobile_no,
+                            s.si_company,
+                            s.si_model,
+                            s.si_assign_to,
+                            s.si_remarks AS EstimateCost,
+                            s.si_deliverydate,
+                            s.si_finish,
+                            t.as_name AS Technician,
+                            ass.AssignedDate,
+                            s.si_return_entryno,
+                            s.si_color,
+                            clr.clr_name
+                        FROM inv_sales_inf s
+                        LEFT JOIN acc_subhead t ON t.as_id = s.si_assign_to
+                        LEFT JOIN inv_service_complaint_reg c ON c.scr_id = s.si_coupon_no
+                        LEFT JOIN inv_color clr ON clr.clr_id = s.si_color
+                        OUTER APPLY (
+                            SELECT MAX(h.ssh_changed_date) AS AssignedDate
+                            FROM inv_service_status_history h
+                            WHERE h.ssh_ticket_id = s.si_entryno
+                            AND h.ssh_status IN (N'Assigned', N'Relocate')
+                        ) ass
+                        WHERE s.si_str_id = 12
+                        AND ISNULL(s.si_coupon_no, 0) <> 0
+                        AND (
+                                (ISNULL(@si_other_remarks, N'') = N'' AND s.si_finish IN (N'Unassigned', N'Relocate'))
+                                OR (ISNULL(@si_other_remarks, N'') <> N'' AND s.si_finish = @si_other_remarks)
+                            )
+                        AND (@from_date IS NULL OR s.si_date >= @from_date)
+                        AND (@to_date IS NULL OR s.si_date < DATEADD(DAY, 1, @to_date))
+                        AND (@si_entryno IS NULL OR s.si_entryno = @si_entryno)
+                        AND (@si_acc_id IS NULL OR s.si_acc_id = @si_acc_id)
+                        AND (@si_assign_to IS NULL OR s.si_assign_to = @si_assign_to)
+                        AND (@rout_id IS NULL OR c.scr_rout_id = @rout_id)
+                        ORDER BY s.si_entryno DESC";
 
                 const string lendSql = @"
-SELECT
-    l.li_entryno,
-    l.li_in,
-    l.li_out,
-    l.li_remarks,
-    l.li_ir_id,
-    i.ir_name,
-    l.li_ir_mrp,
-    l.li_ift_id
-FROM inv_sales_inf s
-INNER JOIN inv_lend_item_transactions l
-    ON l.li_entryno = s.si_entryno
-   AND l.li_form = N'WORKORDER QUOTATION'
-LEFT JOIN inv_item_reg i ON i.ir_id = l.li_ir_id
-LEFT JOIN inv_service_complaint_reg c ON c.scr_id = s.si_coupon_no
-WHERE s.si_str_id = 12
-  AND ISNULL(s.si_coupon_no, 0) <> 0
-  AND (
-        (ISNULL(@si_other_remarks, N'') = N'' AND s.si_finish IN (N'Unassigned', N'Relocate'))
-        OR (ISNULL(@si_other_remarks, N'') <> N'' AND s.si_finish = @si_other_remarks)
-      )
-  AND (@from_date IS NULL OR s.si_date >= @from_date)
-  AND (@to_date IS NULL OR s.si_date < DATEADD(DAY, 1, @to_date))
-  AND (@si_entryno IS NULL OR s.si_entryno = @si_entryno)
-  AND (@si_acc_id IS NULL OR s.si_acc_id = @si_acc_id)
-  AND (@si_assign_to IS NULL OR s.si_assign_to = @si_assign_to)
-  AND (@rout_id IS NULL OR c.scr_rout_id = @rout_id)";
+                        SELECT
+                            l.li_entryno,
+                            l.li_in,
+                            l.li_out,
+                            l.li_remarks,
+                            l.li_ir_id,
+                            i.ir_name,
+                            l.li_ir_mrp,
+                            l.li_ift_id
+                        FROM inv_sales_inf s
+                        INNER JOIN inv_lend_item_transactions l
+                            ON l.li_entryno = s.si_entryno
+                        AND l.li_form = N'WORKORDER QUOTATION'
+                        LEFT JOIN inv_item_reg i ON i.ir_id = l.li_ir_id
+                        LEFT JOIN inv_service_complaint_reg c ON c.scr_id = s.si_coupon_no
+                        WHERE s.si_str_id = 12
+                        AND ISNULL(s.si_coupon_no, 0) <> 0
+                        AND (
+                                (ISNULL(@si_other_remarks, N'') = N'' AND s.si_finish IN (N'Unassigned', N'Relocate'))
+                                OR (ISNULL(@si_other_remarks, N'') <> N'' AND s.si_finish = @si_other_remarks)
+                            )
+                        AND (@from_date IS NULL OR s.si_date >= @from_date)
+                        AND (@to_date IS NULL OR s.si_date < DATEADD(DAY, 1, @to_date))
+                        AND (@si_entryno IS NULL OR s.si_entryno = @si_entryno)
+                        AND (@si_acc_id IS NULL OR s.si_acc_id = @si_acc_id)
+                        AND (@si_assign_to IS NULL OR s.si_assign_to = @si_assign_to)
+                        AND (@rout_id IS NULL OR c.scr_rout_id = @rout_id)";
 
                 ticketTable = new DataTable();
                 lendTable = new DataTable();
